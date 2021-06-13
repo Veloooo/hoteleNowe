@@ -59,7 +59,7 @@ public class HotelForm extends FormLayout {
     }
 
     // Events
-    public static abstract class HotelFormEvent extends ComponentEvent<HotelForm> {
+    public abstract static class HotelFormEvent extends ComponentEvent<HotelForm> {
         private HotelDto hotel;
 
         protected HotelFormEvent(HotelForm source, HotelDto hotel) {
@@ -91,6 +91,7 @@ public class HotelForm extends FormLayout {
         }
     }
 
+    @Override
     public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
                                                                   ComponentEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
