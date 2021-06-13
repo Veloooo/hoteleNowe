@@ -71,7 +71,11 @@ public class HotelService {
 
     @Transactional
     public void createHotel(HotelDto hotelDto) {
-        Hotel hotel = new Hotel(hotelDto.getName(), hotelDto.getCountry(), hotelDto.getCity(), hotelDto.getTotalRooms(), hotelDto.getTotalRooms());
+        Hotel hotel = new Hotel(hotelDto.getName(),
+                hotelDto.getCountry(),
+                hotelDto.getCity(),
+                hotelDto.getTotalRooms(),
+                hotelDto.getTotalRooms());
         hotelRepository.save(hotel);
     }
 
