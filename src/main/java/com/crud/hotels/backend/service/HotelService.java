@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,6 +64,19 @@ public class HotelService {
     }
 
     @Transactional(readOnly = true)
+    public List<HotelDto> getAllHotelsWithFreeRooms(String filterText, LocalDate dateFrom, LocalDate dateTo) {
+        List<Hotel> hotels;
+        if (filterText == null || filterText.isEmpty()) {
+            hotels = hotelRepository.getAllHotelsWithFreeRooms();
+        } else {
+            hotels = hotelRepository.findAllByNameContaining(filterText);
+        }
+        return hotels.stream()
+                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public boolean checkIfHotelAvailable(Long id) {
         return hotelRepository.getHotelById(id)
                 .orElseThrow(EntityNotFoundException::new)
@@ -87,6 +101,7 @@ public class HotelService {
         hotel.setCountry(hotelDto.getCountry());
         return hotelRepository.save(hotel);
     }
+
 
     public void deleteHotel(Long hotelId) {
         try {

@@ -5,6 +5,7 @@ import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.service.HotelService;
 import com.crud.hotels.ui.MainLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -25,6 +26,8 @@ public class ListView extends VerticalLayout {
     private final HotelForm form;
     Grid<HotelDto> grid = new Grid<>(HotelDto.class);
     TextField filterText = new TextField();
+    DatePicker dateFrom = new DatePicker();
+    DatePicker dateTo = new DatePicker();
 
     private HotelService hotelService;
 
@@ -79,10 +82,22 @@ public class ListView extends VerticalLayout {
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
+        filterText.setLabel("Name");
+
+        dateFrom.setPlaceholder("Set date from");
+        dateFrom.setClearButtonVisible(true);
+        dateFrom.addValueChangeListener(e -> updateList());
+        dateFrom.setLabel("Visit from");
+
+        dateTo.setPlaceholder("Set date to");
+        dateTo.setClearButtonVisible(true);
+        dateTo.addValueChangeListener(e -> updateList());
+        dateTo.setLabel("Visit to");
 
         Button addHotelButton = new Button("Add hotel", click -> addHotel());
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addHotelButton);
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, dateFrom, dateTo, addHotelButton);
+        toolbar.expand(dateTo);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

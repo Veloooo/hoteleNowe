@@ -1,4 +1,4 @@
-package com.crud.hotels.ui.dashboard;
+package com.crud.hotels.ui.views.dashboard;
 
 import com.crud.hotels.backend.service.HotelService;
 import com.crud.hotels.ui.MainLayout;
