@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity(name = "reservations")
 public class Reservation {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
