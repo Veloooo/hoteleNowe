@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,4 +34,13 @@ public class RoomService {
     public List<Room> getAllAvailableRoomsForHotel(Long id) {
         return roomRepository.getAllByHotel_IdAndAvailableIsTrue(id);
     }
+
+    @Transactional(readOnly = true)
+    public List<RoomDto> getAllRoomsInHotelWithCriteria(Long hotelId, String name, Double guestsNumberValue, Double pricePerNightValue, Double tempMinValue) {
+        return roomRepository.getAllByHotel_Id(hotelId)
+                .stream()
+                .map(hotel -> modelMapper.map(hotel, RoomDto.class))
+                .collect(Collectors.toList());
+    }
+
 }

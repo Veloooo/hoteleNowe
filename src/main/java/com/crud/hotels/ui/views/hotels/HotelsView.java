@@ -27,13 +27,10 @@ public class HotelsView extends VerticalLayout {
 
     private final HotelForm form;
     Grid<HotelDto> grid = new Grid<>(HotelDto.class);
-    TextField filterText = new TextField();
-    DatePicker dateFrom = new DatePicker();
-    DatePicker dateTo = new DatePicker();
-    NumberField tempMin = new NumberField();
-    NumberField tempMax = new NumberField();
-    NumberField priceMin = new NumberField();
-    NumberField priceMax = new NumberField();
+    TextField nameFilter = new TextField();
+    TextField cityFilter = new TextField();
+    TextField countryFilter = new TextField();
+
     private HotelService hotelService;
 
     public HotelsView(HotelService hotelService) {
@@ -63,6 +60,7 @@ public class HotelsView extends VerticalLayout {
             HotelDto hotelDto = evt.getHotel();
             hotelDto.setFreeRooms(0);
             hotelDto.setTotalRooms(0);
+            hotelDto.setOwner(currentUser);
             hotelService.createHotel(hotelDto);
         } else
             hotelService.editHotel(Long.valueOf(evt.getHotel().getId()), evt.getHotel());
@@ -83,49 +81,27 @@ public class HotelsView extends VerticalLayout {
     }
 
     private HorizontalLayout getToolBar() {
-        filterText.setPlaceholder("Filter by name");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> updateList());
-        filterText.setLabel("Name");
+        nameFilter.setPlaceholder("Filter by name");
+        nameFilter.setClearButtonVisible(true);
+        nameFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        nameFilter.addValueChangeListener(e -> updateList());
+        nameFilter.setLabel("Name");
 
-        dateFrom.setPlaceholder("Set date from");
-        dateFrom.setClearButtonVisible(true);
-        dateFrom.addValueChangeListener(e -> updateList());
-        dateFrom.setLabel("Visit from");
+        cityFilter.setPlaceholder("Filter by city");
+        cityFilter.setClearButtonVisible(true);
+        cityFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        cityFilter.addValueChangeListener(e -> updateList());
+        cityFilter.setLabel("City");
 
-        dateTo.setPlaceholder("Set date to");
-        dateTo.setClearButtonVisible(true);
-        dateTo.addValueChangeListener(e -> updateList());
-        dateTo.setLabel("Visit to");
+        countryFilter.setPlaceholder("Filter by country");
+        countryFilter.setClearButtonVisible(true);
+        countryFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        countryFilter.addValueChangeListener(e -> updateList());
+        countryFilter.setLabel("Country");
 
-        tempMin.setPlaceholder("Set temp min");
-        tempMin.setClearButtonVisible(true);
-        tempMin.addValueChangeListener(e -> updateList());
-        tempMin.setLabel("Temp min");
-
-        tempMax.setPlaceholder("Set temp max");
-        tempMax.setClearButtonVisible(true);
-        tempMax.addValueChangeListener(e -> updateList());
-        tempMax.setLabel("Temp max");
-
-        priceMin.setPlaceholder("Set price min");
-        priceMin.setClearButtonVisible(true);
-        priceMin.addValueChangeListener(e -> updateList());
-        priceMin.setLabel("Price min");
-
-        priceMax.setPlaceholder("Set price max");
-        priceMax.setClearButtonVisible(true);
-        priceMax.addValueChangeListener(e -> updateList());
-        priceMax.setLabel("Price max");
 
         Button addHotelButton = new Button("Add hotel", click -> addHotel());
-        HorizontalLayout toolbar = null;
-        if(currentUser.getRole().equals("ROLE_OWNER"))
-            toolbar = new HorizontalLayout(filterText, dateFrom, dateTo, tempMin, tempMax, priceMin, priceMax, addHotelButton);
-        else
-            toolbar = new HorizontalLayout(filterText, dateFrom, dateTo, tempMin, tempMax, priceMin, priceMax);
-        toolbar.expand(tempMax);
+        HorizontalLayout toolbar = new HorizontalLayout(nameFilter, cityFilter, countryFilter, addHotelButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -155,6 +131,6 @@ public class HotelsView extends VerticalLayout {
     }
 
     private void updateList() {
-        grid.setItems(hotelService.getAllHotelsWithFreeRooms(filterText.getValue()));
+        grid.setItems(hotelService.getHotelsOwnedByUser(currentUser.getLogin(), nameFilter.getValue(), cityFilter.getValue(), countryFilter.getValue()));
     }
 }

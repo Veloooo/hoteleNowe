@@ -27,10 +27,7 @@ public class HotelController {
 
     @GetMapping
     public List<HotelDto> getHotels() {
-        return hotelService.getAllHotels()
-                .stream()
-                .map(hotel -> modelMapper.map(hotel.toString(), HotelDto.class))
-                .collect(Collectors.toList());
+        return hotelService.getAllHotels();
     }
 
     @GetMapping(value = "/{hotelId}")

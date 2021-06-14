@@ -15,12 +15,9 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.shared.Registration;
 
 import java.util.List;
-import java.util.function.DoubleToIntFunction;
-
 import static com.crud.hotels.ui.MainLayout.currentUser;
 
 public class RoomForm extends FormLayout {
@@ -33,23 +30,40 @@ public class RoomForm extends FormLayout {
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Close");
+    Button book = new Button("Book");
 
     Binder<RoomDto> binder = new BeanValidationBinder<>(RoomDto.class);
-    private List<HotelDto> hotels;
 
     public RoomForm(List<HotelDto> hotels){
         addClassName("hotel-form");
         binder.bindInstanceFields(this);
         hotel.setItems(hotels);
         hotel.setItemLabelGenerator(HotelDto::getName);
-        add(name, guestsNumber, pricePerNight, hotel, createButtonsLayout());
+        if("ROLE_OWNER".equals(currentUser.getRole()))
+            add(name, guestsNumber, pricePerNight, hotel, createButtonsLayoutForOwner());
+        else {
+            add(createButtonsLayoutForUser());
+        }
     }
+
+
 
     public void setRoomDto(RoomDto roomDto){
         binder.setBean(roomDto);
     }
 
-    private Component createButtonsLayout() {
+    private Component createButtonsLayoutForUser(){
+        book.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        book.addClickListener(click -> fireEvent(new BookEvent(this, binder.getBean())));
+        close.addClickListener(click -> fireEvent(new CloseEvent(this)));
+
+        binder.addStatusChangeListener(evt -> book.setEnabled(binder.isValid()));
+
+        return new HorizontalLayout(book, close);
+    }
+
+    private Component createButtonsLayoutForOwner() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -58,14 +72,12 @@ public class RoomForm extends FormLayout {
 
         save.addClickListener(click -> validateAndSave());
         delete.addClickListener(click -> fireEvent(new DeleteEvent(this, binder.getBean())));
+        book.addClickListener(click -> fireEvent(new BookEvent(this, binder.getBean())));
         close.addClickListener(click -> fireEvent(new CloseEvent(this)));
 
         binder.addStatusChangeListener(evt -> save.setEnabled(binder.isValid()));
 
-        if("ROLE_OWNER".equals(currentUser.getRole()))
-            return new HorizontalLayout(save, delete, close);
-        else 
-            return new HorizontalLayout();
+        return new HorizontalLayout(save, delete, close);
     }
 
     private void validateAndSave() {

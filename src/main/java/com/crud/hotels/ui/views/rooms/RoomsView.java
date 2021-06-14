@@ -2,11 +2,12 @@ package com.crud.hotels.ui.views.rooms;
 
 
 import com.crud.hotels.backend.dto.HotelDto;
+import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.dto.RoomDto;
 import com.crud.hotels.backend.service.HotelService;
+import com.crud.hotels.backend.service.ReservationService;
 import com.crud.hotels.backend.service.RoomService;
 import com.crud.hotels.ui.MainLayout;
-import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -20,7 +21,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.apache.el.stream.Stream;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,26 +36,32 @@ public class RoomsView extends VerticalLayout {
     private final RoomForm form;
     Grid<RoomDto> grid = new Grid<>(RoomDto.class);
     TextField name = new TextField();
-    NumberField minGuestsNumber = new NumberField();
-    NumberField maxGuestsNumber = new NumberField();
-    NumberField pricePerNightMin = new NumberField();
-    NumberField pricePerNightMax = new NumberField();
+    NumberField guestsNumber = new NumberField();
+    NumberField pricePerNight = new NumberField();
+    DatePicker dateFrom = new DatePicker();
+    DatePicker dateTo = new DatePicker();
+    NumberField tempMin = new NumberField();
     ComboBox<HotelDto> hotel = new ComboBox<>();
 
     private RoomService roomService;
     private HotelService hotelService;
+    private ReservationService reservationService;
+    private List<HotelDto> hotelsDisplayed;
 
-    public RoomsView(RoomService roomService, HotelService hotelService) {
+    public RoomsView(RoomService roomService, HotelService hotelService, ReservationService reservationService) {
         this.roomService = roomService;
         this.hotelService = hotelService;
-
+        this.reservationService = reservationService;
+        if ("ROLE_OWNER".equals(currentUser.getRole()))
+            hotelsDisplayed = hotelService.getHotelsOwnedByUser(currentUser.getLogin());
+        else hotelsDisplayed = hotelService.getAllHotels();
         addClassName("list-view");
         setSizeFull();
         configureGrid();
         getToolBar();
 
         form = new RoomForm(
-                hotelService.getHotelsOwnedByUser(currentUser.getId())
+                hotelsDisplayed
         );
         form.addListener(RoomForm.SaveEvent.class, this::saveRoom);
         form.addListener(RoomForm.DeleteEvent.class, this::deleteRoom);
@@ -72,6 +78,12 @@ public class RoomsView extends VerticalLayout {
     }
 
     private void bookRoom(RoomForm.BookEvent evt) {
+        ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setDateFrom(dateFrom.getValue());
+        reservationDto.setDateTo(dateTo.getValue());
+        reservationDto.setRoom(evt.getRoomDto());
+        reservationDto.setUser(currentUser);
+        reservationService.createReservation(reservationDto);
     }
 
     private void saveRoom(RoomForm.SaveEvent evt) {
@@ -103,40 +115,45 @@ public class RoomsView extends VerticalLayout {
         name.addValueChangeListener(e -> updateList());
         name.setLabel("Name");
 
-        minGuestsNumber.setPlaceholder("Min guests number");
-        minGuestsNumber.setClearButtonVisible(true);
-        minGuestsNumber.addValueChangeListener(e -> updateList());
-        minGuestsNumber.setLabel("Min guests number");
+        dateFrom.setPlaceholder("Date from");
+        dateFrom.setClearButtonVisible(true);
+        dateFrom.addValueChangeListener(e -> updateList());
+        dateFrom.setLabel("Date from");
 
-        maxGuestsNumber.setPlaceholder("Max guests number");
-        maxGuestsNumber.setClearButtonVisible(true);
-        maxGuestsNumber.addValueChangeListener(e -> updateList());
-        maxGuestsNumber.setLabel("Max guests number");
+        dateTo.setPlaceholder("Date to");
+        dateTo.setClearButtonVisible(true);
+        dateTo.addValueChangeListener(e -> updateList());
+        dateTo.setLabel("Date to");
 
-        pricePerNightMin.setPlaceholder("Set price per night min");
-        pricePerNightMin.setClearButtonVisible(true);
-        pricePerNightMin.addValueChangeListener(e -> updateList());
-        pricePerNightMin.setLabel("Price min");
+        guestsNumber.setPlaceholder("Max guests number");
+        guestsNumber.setClearButtonVisible(true);
+        guestsNumber.addValueChangeListener(e -> updateList());
+        guestsNumber.setLabel("Max guests number");
 
-        pricePerNightMax.setPlaceholder("Set temp min");
-        pricePerNightMax.setClearButtonVisible(true);
-        pricePerNightMax.addValueChangeListener(e -> updateList());
-        pricePerNightMax.setLabel("Price max");
+        pricePerNight.setPlaceholder("Set price max");
+        pricePerNight.setClearButtonVisible(true);
+        pricePerNight.addValueChangeListener(e -> updateList());
+        pricePerNight.setLabel("Price max");
+
+        tempMin.setPlaceholder("Set temp min");
+        tempMin.setClearButtonVisible(true);
+        tempMin.addValueChangeListener(e -> updateList());
+        tempMin.setLabel("Temp min");
 
         hotel.setPlaceholder("Select hotel");
         hotel.setClearButtonVisible(true);
         hotel.addValueChangeListener(e -> updateList());
         hotel.setLabel("Hotel");
-        hotel.setItems(hotelService.getHotelsOwnedByUser(currentUser.getId()));
+        hotel.setItems(hotelsDisplayed);
         hotel.setItemLabelGenerator(HotelDto::getName);
 
         Button addRoomButton = new Button("Add room", click -> addRoom());
         HorizontalLayout toolbar = null;
-        if(currentUser.getRole().equals("ROLE_OWNER"))
-            toolbar = new HorizontalLayout(name, minGuestsNumber, maxGuestsNumber, pricePerNightMin, pricePerNightMax, hotel, addRoomButton);
+        if (currentUser.getRole().equals("ROLE_OWNER"))
+            toolbar = new HorizontalLayout(name, guestsNumber, pricePerNight, hotel, addRoomButton);
         else
-            toolbar = new HorizontalLayout(name, minGuestsNumber, maxGuestsNumber, pricePerNightMin, pricePerNightMax, hotel);
-        toolbar.expand(pricePerNightMax);
+            toolbar = new HorizontalLayout(name, dateFrom, dateTo, guestsNumber, pricePerNight, tempMin, hotel);
+        toolbar.expand(pricePerNight);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -152,11 +169,10 @@ public class RoomsView extends VerticalLayout {
         grid.setColumns("name", "pricePerNight", "guestsNumber");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.addColumn(
-                hotel -> hotel.getHotel().getName()
+                h -> h.getHotel().getName()
         ).setHeader("Hotel");
 
-        if(currentUser.getRole().equals("ROLE_OWNER"))
-            grid.asSingleSelect().addValueChangeListener(event -> editRoom(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> editRoom(event.getValue()));
     }
 
     private void editRoom(RoomDto roomDto) {
@@ -170,13 +186,22 @@ public class RoomsView extends VerticalLayout {
     }
 
     private void updateList() {
-        if(currentUser.getRole().equals("ROLE_OWNER"))
-            grid.setItems(hotelService.getHotelsOwnedByUser(currentUser.getId())
+        if (currentUser.getRole().equals("ROLE_OWNER"))
+            grid.setItems(hotelsDisplayed
                     .stream()
-                    .map(hotelDto -> roomService.getAllRoomsInHotel(Long.valueOf(hotelDto.getId())))
+                    .map(hotelDto -> roomService.getAllRoomsInHotelWithCriteria(Long.valueOf(hotelDto.getId()),
+                            null, null, null, null))
                     .flatMap(List::stream)
                     .collect(Collectors.toList()));
         else
-            grid.setItems(roomService.findAll());
+            grid.setItems(roomService.findAllWithCriteria(
+                    name.getValue(),
+                    dateFrom.getValue(),
+                    dateTo.getValue(),
+                    guestsNumber.getValue(),
+                    pricePerNight.getValue(),
+                    tempMin.getValue(),
+                    hotel.getValue()
+            ));
     }
 }

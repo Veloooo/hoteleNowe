@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,8 +29,9 @@ public class HotelService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public HotelService(HotelRepository hotelRepository, ModelMapper modelMapper) {
+    public HotelService(HotelRepository hotelRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.hotelRepository = hotelRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -38,8 +40,10 @@ public class HotelService {
     }
 
     @Transactional(readOnly = true)
-    public List<Hotel> getAllHotels() {
-        return hotelRepository.findAll();
+    public List<HotelDto> getAllHotels() {
+        return hotelRepository.findAll().stream()
+                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -53,9 +57,20 @@ public class HotelService {
                 .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                 .collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
-    public List<HotelDto> getHotelsOwnedByUser(Long userId) {
-        return hotelRepository.getAllHotelsWithFreeRooms().stream()
+    public List<HotelDto> getHotelsOwnedByUser(String login, String name, String city, String country) {
+        return hotelRepository.findAllByOwner(userRepository.findUserByLogin(login)).stream()
+                .filter(hotel ->
+                        (name != null && hotel.getName().toLowerCase().contains(name.toLowerCase())) &&
+                                (city != null && hotel.getCity().toLowerCase().contains(city.toLowerCase())) &&
+                                (country != null && hotel.getCountry().toLowerCase().contains(country.toLowerCase())))
+                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public List<HotelDto> getHotelsOwnedByUser(String login) {
+        return hotelRepository.findAllByOwner(userRepository.findUserByLogin(login)).stream()
                 .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                 .collect(Collectors.toList());
     }
