@@ -36,8 +36,9 @@ public class Hotel {
     @NonNull
     private Integer freeRooms;
 
-    @OneToOne(mappedBy = "hotel")
-    private Reservation reservation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @OneToMany(mappedBy = "hotel",
             fetch = FetchType.LAZY,

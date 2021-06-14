@@ -1,6 +1,7 @@
-package com.crud.hotels.ui.views.list;
+package com.crud.hotels.ui.views.reservations;
 
 import com.crud.hotels.backend.dto.HotelDto;
+import com.crud.hotels.backend.dto.ReservationDto;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -14,43 +15,44 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-public class HotelForm extends FormLayout {
+public class ReservationForm extends FormLayout {
 
     TextField name = new TextField("Name");
     TextField city = new TextField("City");
     TextField country = new TextField("Country");
 
-    Button save = new Button("Save");
+    //Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Close");
 
-    Binder<HotelDto> binder = new BeanValidationBinder<>(HotelDto.class);
+    Binder<ReservationDto> binder = new BeanValidationBinder<>(ReservationDto.class);
 
-    public HotelForm(){
+    public ReservationForm(){
         addClassName("hotel-form");
         binder.bindInstanceFields(this);
 
         add(name, city, country, createButtonsLayout());
     }
 
-    public void setHotelDto(HotelDto hotelDto){
-        binder.setBean(hotelDto);
+    public void setReservationDto(ReservationDto reservationDto){
+        binder.setBean(reservationDto);
     }
 
     private Component createButtonsLayout() {
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        //save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        save.addClickShortcut(Key.ENTER);
+        //save.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ESCAPE);
 
-        save.addClickListener(click -> validateAndSave());
+        //save.addClickListener(click -> validateAndSave());
         delete.addClickListener(click -> fireEvent(new DeleteEvent(this, binder.getBean())));
         close.addClickListener(click -> fireEvent(new CloseEvent(this)));
 
-        binder.addStatusChangeListener(evt -> save.setEnabled(binder.isValid()));
+        //binder.addStatusChangeListener(evt -> save.setEnabled(binder.isValid()));
 
-        return new HorizontalLayout(save, delete, close);
+        //return new HorizontalLayout(save, delete, close);
+        return new HorizontalLayout(delete, close);
     }
 
     private void validateAndSave() {
@@ -59,34 +61,34 @@ public class HotelForm extends FormLayout {
     }
 
     // Events
-    public abstract static class HotelFormEvent extends ComponentEvent<HotelForm> {
-        private HotelDto hotel;
+    public abstract static class ReservationFormEvent extends ComponentEvent<ReservationForm> {
+        private ReservationDto reservationDto;
 
-        protected HotelFormEvent(HotelForm source, HotelDto hotel) {
+        protected ReservationFormEvent(ReservationForm source, ReservationDto reservationDto) {
             super(source, false);
-            this.hotel = hotel;
+            this.reservationDto = reservationDto;
         }
 
-        public HotelDto getHotel() {
-            return hotel;
-        }
-    }
-
-    public static class SaveEvent extends HotelFormEvent {
-        SaveEvent(HotelForm source, HotelDto hotel) {
-            super(source, hotel);
+        public ReservationDto getReservation() {
+            return reservationDto;
         }
     }
 
-    public static class DeleteEvent extends HotelFormEvent {
-        DeleteEvent(HotelForm source, HotelDto hotel) {
-            super(source, hotel);
+    public static class SaveEvent extends ReservationFormEvent {
+        SaveEvent(ReservationForm source, ReservationDto reservationDto) {
+            super(source, reservationDto);
+        }
+    }
+
+    public static class DeleteEvent extends ReservationFormEvent {
+        DeleteEvent(ReservationForm source, ReservationDto reservationDto) {
+            super(source, reservationDto);
         }
 
     }
 
-    public static class CloseEvent extends HotelFormEvent {
-        CloseEvent(HotelForm source) {
+    public static class CloseEvent extends ReservationFormEvent {
+        CloseEvent(ReservationForm source) {
             super(source, null);
         }
     }

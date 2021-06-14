@@ -28,6 +28,7 @@ public class HotelDto {
     @NotNull
     private Integer totalRooms;
 
+    @NotNull
     private Integer freeRooms;
 
     private List<Reservation> reservations;

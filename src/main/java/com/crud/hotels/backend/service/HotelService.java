@@ -1,9 +1,11 @@
 package com.crud.hotels.backend.service;
 
 import com.crud.hotels.backend.domain.Hotel;
+import com.crud.hotels.backend.domain.User;
 import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.HotelRepository;
+import com.crud.hotels.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
@@ -22,6 +24,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class HotelService {
     private HotelRepository hotelRepository;
+    private UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -46,6 +49,12 @@ public class HotelService {
 
     @Transactional(readOnly = true)
     public List<HotelDto> getAllHotelsWithFreeRooms() {
+        return hotelRepository.getAllHotelsWithFreeRooms().stream()
+                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public List<HotelDto> getHotelsOwnedByUser(Long userId) {
         return hotelRepository.getAllHotelsWithFreeRooms().stream()
                 .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                 .collect(Collectors.toList());
@@ -116,10 +125,10 @@ public class HotelService {
     public void insertSampleData() {
         if (hotelRepository.count() < 5) {
             hotelRepository.saveAll(
-                    Stream.of("Krakowiak,Poland,Krakow,10,20",
-                            "DetucheHotel,Germany,Berlin,1,21",
-                            "Matrioszka,Ukraine,Kiev,22,33",
-                            "Marriot,Poland,Warszawa,0,10")
+                    Stream.of("Krakowiak,Poland,Krakow,10,20,Bogdan",
+                            "DetucheHotel,Germany,Berlin,1,21,Bogdan",
+                            "Matrioszka,Ukraine,Kiev,22,33,Janusz",
+                            "Marriot,Poland,Warszawa,0,10,Janusz")
                             .map(name -> {
                                         String[] split = name.split(",");
                                         Hotel hotel = new Hotel();
@@ -128,6 +137,8 @@ public class HotelService {
                                         hotel.setCity(split[2]);
                                         hotel.setFreeRooms(Integer.valueOf(split[3]));
                                         hotel.setTotalRooms(Integer.valueOf(split[4]));
+                                        User user = userRepository.findUserByLogin(split[5]);
+                                        user.addHotel(hotel);
                                         return hotel;
                                     }
                             ).collect(Collectors.toList())

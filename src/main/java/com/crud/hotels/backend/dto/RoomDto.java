@@ -1,13 +1,24 @@
 package com.crud.hotels.backend.dto;
 
-import java.time.LocalDate;
-import java.util.Set;
+import lombok.*;
 
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomDto {
 
-    Set<Integer> zajeteDni ;
+    private Long id;
 
+    private String name;
 
+    private Double guestsNumber;
 
+    private Double pricePerNight;
 
+    private HotelDto hotel;
+
+    private List<ReservationDto> reservations;
 }

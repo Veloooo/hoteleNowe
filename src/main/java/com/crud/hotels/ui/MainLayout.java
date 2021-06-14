@@ -1,7 +1,11 @@
 package com.crud.hotels.ui;
 
+import com.crud.hotels.backend.dto.UserDto;
+import com.crud.hotels.backend.service.UserService;
 import com.crud.hotels.ui.views.dashboard.DashboardView;
-import com.crud.hotels.ui.views.list.ListView;
+import com.crud.hotels.ui.views.hotels.HotelsView;
+import com.crud.hotels.ui.views.reservations.ReservationsView;
+import com.crud.hotels.ui.views.rooms.RoomsView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -20,35 +24,38 @@ import org.springframework.security.core.userdetails.UserDetails;
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
 
-    private String currentUserName;
-    private String userRole;
-
-    public MainLayout(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof UserDetails) {
-                currentUserName = ((UserDetails)principal).getUsername();
-            } else {
-                currentUserName = principal.toString();
-            }
-        }
-        userRole = authentication.getAuthorities().toString();
+    public static UserDto currentUser;
+    private UserService userService;
+    public MainLayout(UserService userService){
+        this.userService = userService;
+        getCurrentUser();
         createHeader();
         createDrawer();
     }
 
     private void createDrawer() {
-        RouterLink listLink = new RouterLink("List", ListView.class);
-        listLink.setHighlightCondition(HighlightConditions.sameLocation());
-        addToDrawer(new VerticalLayout(
-                listLink,
-                new RouterLink("Dasboard", DashboardView.class)
-        ));
+        RouterLink hotelsList = new RouterLink("Hotels List", HotelsView.class);
+        hotelsList.setHighlightCondition(HighlightConditions.sameLocation());
+        RouterLink roomsList = new RouterLink("Rooms List", RoomsView.class);
+        roomsList.setHighlightCondition(HighlightConditions.sameLocation());
+        RouterLink reservationsList = new RouterLink("Reservations List", ReservationsView.class);
+        reservationsList.setHighlightCondition(HighlightConditions.sameLocation());
+        if(currentUser.getRole().equals("ROLE_USER"))
+            addToDrawer(new VerticalLayout(
+                    roomsList,
+                    reservationsList,
+                    new RouterLink("Dashboard", DashboardView.class)
+            ));
+        else if (currentUser.getRole().equals("ROLE_OWNER"))
+            addToDrawer(new VerticalLayout(
+                    hotelsList,
+                    roomsList,
+                    new RouterLink("Dashboard", DashboardView.class)
+            ));
     }
 
     private void createHeader() {
-        H1 logo = new H1("Vaadin CRM    currently logged: " + currentUserName + " with role: " + userRole);
+        H1 logo = new H1("Vaadin CRM");
         logo.addClassName("logo");
 
         Anchor logout = new Anchor("logout", "Log out");
@@ -61,5 +68,20 @@ public class MainLayout extends AppLayout {
 
         addToNavbar(header);
     }
+
+    private void getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = null;
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                currentUserName = ((UserDetails)principal).getUsername();
+            } else {
+                currentUserName = principal.toString();
+            }
+        }
+        currentUser = userService.getUserByLogin(currentUserName);
+    }
+
 
 }
