@@ -110,12 +110,16 @@ public class HotelService {
 
     @Transactional
     public void createHotel(HotelDto hotelDto) {
-        Hotel hotel = new Hotel(hotelDto.getName(),
-                hotelDto.getCountry(),
-                hotelDto.getCity(),
-                hotelDto.getTotalRooms(),
-                hotelDto.getTotalRooms());
-        hotelRepository.save(hotel);
+        Hotel hotel = new Hotel.Builder()
+                .hotelName(hotelDto.getName())
+                .hotelCountry(hotelDto.getCountry())
+                .hotelCity(hotelDto.getCity())
+                .hotelTotalRooms(hotelDto.getTotalRooms())
+                .hotelFreeRooms(hotelDto.getTotalRooms())
+                .build();
+        User user = userRepository.findUserByLogin(hotelDto.getOwner().getLogin());
+        user.addHotel(hotel);
+        userRepository.save(user);
     }
 
     @Transactional

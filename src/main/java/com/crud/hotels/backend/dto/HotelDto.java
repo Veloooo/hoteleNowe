@@ -1,13 +1,11 @@
 package com.crud.hotels.backend.dto;
 
-import com.crud.hotels.backend.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @Setter
@@ -31,5 +29,7 @@ public class HotelDto {
     @NotNull
     private Integer freeRooms;
 
-    private List<Reservation> reservations;
+    @NotNull
+    private UserDto owner;
+
 }

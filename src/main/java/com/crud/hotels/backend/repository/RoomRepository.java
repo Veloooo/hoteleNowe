@@ -9,6 +9,4 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> getAllByHotel_Id(Long id);
-
-    List<Room> getAllByHotel_IdAndAvailableIsTrue(Long id);
 }

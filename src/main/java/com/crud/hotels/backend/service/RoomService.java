@@ -32,7 +32,60 @@ public class RoomService {
     }
 
     public List<Room> getAllAvailableRoomsForHotel(Long id) {
-        return roomRepository.getAllByHotel_IdAndAvailableIsTrue(id);
+        //return roomRepository.getAllByHotel_IdAndAvailableIsTrue(id);
+        return null;
+    }
+
+
+    public void deleteRoom(Long id) {
+        try {
+            roomRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntityNotFoundException();
+        }
+    }
+
+    public void createRoom(RoomDto roomDto) {
+        roomRepository.save(new Room.Builder()
+                .name(roomDto.getName())
+                .guestsNumber(roomDto.getGuestsNumber())
+                .hotel(modelMapper.map(roomDto.getHotel(), Hotel.class))
+                .pricePerNight(roomDto.getPricePerNight())
+                .build());
+    }
+
+    public Room getRoomById(Long id) {
+        return roomRepository.getOne(id);
+    }
+
+    @Transactional
+    public Room editRoom(Long id, RoomDto roomDto) {
+        Room room = getRoomById(id);
+        room.setName(roomDto.getName());
+        room.setPricePerNight(roomDto.getPricePerNight());
+        room.setGuestsNumber(roomDto.getGuestsNumber());
+        return roomRepository.save(room);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RoomDto> findAll(){
+        return roomRepository.findAll()
+                .stream()
+                .map(room -> modelMapper.map(room, RoomDto.class))
+                .collect(Collectors.toList());
+    }
+
+    /*
+        TODO :: dodać filtrowanie po tych wartościach co są nieużywane
+     */
+
+    @Transactional(readOnly = true)
+    public List<RoomDto> findAllWithCriteria(String name, LocalDate dateFromValue, LocalDate dateToValue, Double guestsNumberValue, Double pricePerNightValue, Double tempMinValue, HotelDto hotelValue){
+        return roomRepository.findAll()
+                .stream()
+                //.filter()
+                .map(room -> modelMapper.map(room, RoomDto.class))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

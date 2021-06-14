@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +17,21 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column
+    private LocalDate dateFrom;
+
+    @Column
+    private LocalDate dateTo;
+
+    @Column
+    private Integer daysTotal;
+
+    @Column
+    private Integer priceTotal;
+
+    @Column
+    private Boolean paid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
