@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 
 @Getter
@@ -20,8 +21,12 @@ public class ReservationDto {
 
     private UserDto user;
 
-    private HotelDto hotel;
-
     private RoomDto room;
+
+    private Integer daysTotal;
+
+    private Integer priceTotal;
+
+    private Boolean paid;
 
 }

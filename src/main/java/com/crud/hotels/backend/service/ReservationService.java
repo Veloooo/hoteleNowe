@@ -4,6 +4,7 @@ import com.crud.hotels.backend.domain.Reservation;
 import com.crud.hotels.backend.domain.Room;
 import com.crud.hotels.backend.domain.User;
 import com.crud.hotels.backend.dto.ReservationDto;
+import com.crud.hotels.backend.dto.UserDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.ReservationRepository;
 import com.crud.hotels.backend.repository.UserRepository;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -42,6 +45,13 @@ public class ReservationService {
         User user = userRepository.findUserByLogin(reservationDto.getUser().getLogin());
         user.addReservation(reservation);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public List<ReservationDto> getAllUserReservations(UserDto userDto) {
+        return reservationRepository.findAllByUser(modelMapper.map(userDto, User.class)).stream()
+                .map(res -> modelMapper.map(res, ReservationDto.class))
+                .collect(Collectors.toList());
     }
 
 

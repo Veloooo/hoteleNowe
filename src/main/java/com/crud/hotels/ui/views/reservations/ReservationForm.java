@@ -29,7 +29,7 @@ public class ReservationForm extends FormLayout {
 
     public ReservationForm(){
         addClassName("hotel-form");
-        binder.bindInstanceFields(this);
+        //binder.bindInstanceFields(this);
 
         add(name, city, country, createButtonsLayout());
     }

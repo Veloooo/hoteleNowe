@@ -2,7 +2,6 @@ package com.crud.hotels.ui.views.reservations;
 
 
 import com.crud.hotels.backend.dto.ReservationDto;
-import com.crud.hotels.backend.dto.RoomDto;
 import com.crud.hotels.backend.service.ReservationService;
 import com.crud.hotels.ui.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -27,14 +26,7 @@ import static com.crud.hotels.ui.MainLayout.currentUser;
 public class ReservationsView extends VerticalLayout {
 
     private final ReservationForm form;
-    Grid<RoomDto> grid = new Grid<>(RoomDto.class);
-    TextField filterText = new TextField();
-    DatePicker dateFrom = new DatePicker();
-    DatePicker dateTo = new DatePicker();
-    NumberField tempMin = new NumberField();
-    NumberField tempMax = new NumberField();
-    NumberField priceMin = new NumberField();
-    NumberField priceMax = new NumberField();
+    Grid<ReservationDto> grid = new Grid<>(ReservationDto.class);
 
     private ReservationService reservationService;
 
@@ -43,17 +35,15 @@ public class ReservationsView extends VerticalLayout {
         addClassName("list-view");
         setSizeFull();
         configureGrid();
-        getToolBar();
 
         form = new ReservationForm();
-        //form.addListener(ReservationForm.SaveEvent.class, this::saveReservation);
         form.addListener(ReservationForm.DeleteEvent.class, this::deleteReservation);
         form.addListener(ReservationForm.CloseEvent.class, e -> closeEditor());
-        Div hotel = new Div(grid, form);
-        hotel.addClassName("content");
-        hotel.setSizeFull();
+        Div reservations = new Div(grid, form);
+        reservations.addClassName("content");
+        reservations.setSizeFull();
 
-        add(getToolBar(), hotel);
+        add(reservations);
         updateList();
 
         closeEditor();
@@ -82,69 +72,23 @@ public class ReservationsView extends VerticalLayout {
         removeClassName("editing");
     }
 
-    private HorizontalLayout getToolBar() {
-        filterText.setPlaceholder("Filter by name");
-        filterText.setClearButtonVisible(true);
-        filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> updateList());
-        filterText.setLabel("Name");
-
-        dateFrom.setPlaceholder("Set date from");
-        dateFrom.setClearButtonVisible(true);
-        dateFrom.addValueChangeListener(e -> updateList());
-        dateFrom.setLabel("Visit from");
-
-        dateTo.setPlaceholder("Set date to");
-        dateTo.setClearButtonVisible(true);
-        dateTo.addValueChangeListener(e -> updateList());
-        dateTo.setLabel("Visit to");
-
-        tempMin.setPlaceholder("Set temp min");
-        tempMin.setClearButtonVisible(true);
-        tempMin.addValueChangeListener(e -> updateList());
-        tempMin.setLabel("Temp min");
-
-        tempMax.setPlaceholder("Set temp max");
-        tempMax.setClearButtonVisible(true);
-        tempMax.addValueChangeListener(e -> updateList());
-        tempMax.setLabel("Temp max");
-
-        priceMin.setPlaceholder("Set price min");
-        priceMin.setClearButtonVisible(true);
-        priceMin.addValueChangeListener(e -> updateList());
-        priceMin.setLabel("Price min");
-
-        priceMax.setPlaceholder("Set price max");
-        priceMax.setClearButtonVisible(true);
-        priceMax.addValueChangeListener(e -> updateList());
-        priceMax.setLabel("Price max");
-
-        Button addHotelButton = new Button("Add hotel", click -> addHotel());
-        HorizontalLayout toolbar = null;
-        if(currentUser.getRole().equals("ROLE_OWNER"))
-            toolbar = new HorizontalLayout(filterText, dateFrom, dateTo, tempMin, tempMax, priceMin, priceMax, addHotelButton);
-        else
-            toolbar = new HorizontalLayout(filterText, dateFrom, dateTo, tempMin, tempMax, priceMin, priceMax);
-        toolbar.expand(tempMax);
-        toolbar.addClassName("toolbar");
-        return toolbar;
-    }
-
     private void addHotel() {
         grid.asSingleSelect().clear();
-        editHotel(new ReservationDto());
+        editReservation(new ReservationDto());
     }
 
     private void configureGrid() {
         grid.addClassName("hotel-grid");
         grid.setSizeFull();
-        grid.setColumns("name", "city", "country", "freeRooms", "totalRooms");
+        grid.setColumns("dateFrom", "dateTo", "daysTotal", "priceTotal", "paid");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        grid.addColumn(h -> h.getRoom().getHotel().getName()).setHeader("Hotel");
+        grid.addColumn(h -> h.getRoom().getName()).setHeader("Room");
 
-       // grid.asSingleSelect().addValueChangeListener(event -> editHotel(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> editReservation(event.getValue()));
     }
 
-    private void editHotel(ReservationDto reservationDto) {
+    private void editReservation(ReservationDto reservationDto) {
         if (reservationDto == null)
             closeEditor();
         else {
@@ -155,6 +99,6 @@ public class ReservationsView extends VerticalLayout {
     }
 
     private void updateList() {
-      //  grid.setItems(hotelService.getAllHotelsWithFreeRooms(filterText.getValue()));
+        grid.setItems(reservationService.getAllUserReservations(currentUser));
     }
 }
