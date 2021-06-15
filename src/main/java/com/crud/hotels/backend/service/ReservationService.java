@@ -7,7 +7,6 @@ import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.dto.UserDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.ReservationRepository;
-import com.crud.hotels.backend.repository.RoomRepository;
 import com.crud.hotels.backend.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +32,17 @@ public class ReservationService {
         this.userRepository = userRepository;
     }
 
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.getReservationById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationDto> getAllReservations() {
+        return reservationRepository.findAll().stream()
+                .map(reservation -> modelMapper.map(reservation, ReservationDto.class))
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void createReservation(ReservationDto reservationDto) {
         Reservation reservation = new Reservation.Builder()
@@ -50,7 +60,7 @@ public class ReservationService {
 
     @Transactional
     public void updateReservation(ReservationDto reservationDto) {
-        Reservation reservation = reservationRepository.getReservationById(reservationDto.getId());
+        Reservation reservation = reservationRepository.getReservationById(reservationDto.getId()).get();
         reservation.setPaid(reservationDto.getPaid());
         reservationRepository.save(reservation);
     }
@@ -60,6 +70,11 @@ public class ReservationService {
         return reservationRepository.findAllByUser(modelMapper.map(userDto, User.class)).stream()
                 .map(res -> modelMapper.map(res, ReservationDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<ReservationDto> getAllUserReservationsByUsername(String username) {
+        UserDto userDto = modelMapper.map(userRepository.findUserByLogin(username), UserDto.class);
+        return getAllUserReservations(userDto);
     }
 
 
@@ -75,6 +90,16 @@ public class ReservationService {
         return 1;
     }
 
+    @Transactional
+    public Reservation editReservation(Long id, ReservationDto reservationDto) {
+        Reservation reservation = getReservationById(id);
+        reservation.setDateFrom(reservationDto.getDateFrom());
+        reservation.setDateTo(reservationDto.getDateTo());
+        reservation.setDaysTotal(reservationDto.getDaysTotal());
+        reservation.setPriceTotal(reservationDto.getPriceTotal());
+        reservation.setPaid(reservationDto.getPaid());
+        return reservation;
+    }
 
     public void deleteReservation(Long reservationId) {
         try {

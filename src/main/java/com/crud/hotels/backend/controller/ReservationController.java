@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -15,50 +15,44 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, ModelMapper modelMapper) {
         this.reservationService = reservationService;
+        this.modelMapper = modelMapper;
     }
 
-    @GetMapping(path = "/{id}")
-    public ReservationDto getReservation(@PathVariable Long reservationId) {
-        /**
-         * Zwrócenie rezerwacji
-         */
-       return null;
+    @GetMapping(path = "/{reservationId}")
+    public ReservationDto getAllReservations(@PathVariable Long reservationId) {
+        return modelMapper.map(reservationService.getReservationById(reservationId), ReservationDto.class);
     }
 
-    @GetMapping(path = "/")
-    public List<ReservationDto> getReservations() {
-        /**
-         * Zwrócenie wszystkich rezerwacji ??????????????????????????????????????
-         */
-        return new ArrayList<>();
+    @GetMapping(path = "/{user}")
+    public List<ReservationDto> getAllUserReservations(@PathVariable String user) {
+        return reservationService.getAllUserReservationsByUsername(user);
     }
 
-    @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
+    public List<ReservationDto> getAllReservations() {
+        return reservationService.getAllReservations();
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createReservation(@RequestBody ReservationDto reservationDto) {
-       return;
+       reservationService.createReservation(reservationDto);
     }
 
 
-    @PutMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ReservationDto editReservation(@RequestBody ReservationDto reservationDto) {
-        return null;
+    @PutMapping(path = "/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ReservationDto editReservation(@PathVariable Long reservationId, @Valid @RequestBody ReservationDto reservationDto) {
+        return modelMapper.map(reservationService.editReservation(reservationId, reservationDto), ReservationDto.class);
     }
 
 
-    @DeleteMapping(path = "/")
+    @DeleteMapping(path = "/{reservationId}")
     public void deleteReservation(@PathVariable Long reservationId) {
-        return;
+        reservationService.deleteReservation(reservationId);
     }
-
-    /**
-     * ?????????????????????????????????????????
-     * GET
-     * /hotels/reservations/{id}/share - wysłanie rezerwacji na ustalony host i port
-     * To bedzie oddzielny kontroler
-     */
 
 }

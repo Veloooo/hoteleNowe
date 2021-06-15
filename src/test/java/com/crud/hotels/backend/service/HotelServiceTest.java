@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +48,7 @@ class HotelServiceTest {
 
     @Test
     public void getAllHotelsShouldCorrectlyMapListOfHotelsToListOfHotelsDto() {
-        given(hotelRepository.findAll()).willReturn(List.of(new Hotel(), new Hotel()));
+        given(hotelRepository.findAll()).willReturn(Arrays.asList(new Hotel(), new Hotel()));
 
         List<HotelDto> hotels = hotelService.getAllHotels();
 
@@ -80,7 +80,7 @@ class HotelServiceTest {
                 .hotelFreeRooms(1)
                 .build();
 
-        given(hotelRepository.getAllHotelsWithFreeRooms()).willReturn(new ArrayList<Hotel>(hotel1, hotel2));
+        given(hotelRepository.getAllHotelsWithFreeRooms()).willReturn(Arrays.asList(hotel1, hotel2));
 
         List<HotelDto> hotels = hotelService.getAllHotelsWithFreeRooms();
 
@@ -106,7 +106,7 @@ class HotelServiceTest {
                 .build();
 
         given(userRepository.findUserByLogin(any())).willReturn(new User());
-        given(hotelRepository.findAllByOwner(any())).willReturn(List.of(hotel1, hotel2));
+        given(hotelRepository.findAllByOwner(any())).willReturn(Arrays.asList(hotel1, hotel2));
 
         List<HotelDto> hotels = hotelService.getHotelsOwnedByUser("user", "free", "city1", "country1");
 

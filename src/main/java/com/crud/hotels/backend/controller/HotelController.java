@@ -63,4 +63,15 @@ public class HotelController {
     public boolean checkIfHotelAvailable(@PathVariable Long hotelId) {
         return hotelService.checkIfHotelAvailable(hotelId);
     }
+
+    @GetMapping(path = "/owned/{user}")
+    public List<HotelDto> getHotelsOwnedByUser(@PathVariable String user) {
+        return hotelService.getHotelsOwnedByUser(user);
+    }
+
+    @GetMapping(path = "/owned/{user}")
+    public List<HotelDto> getHotelsOwnedByUser(@PathVariable String user, @RequestParam String name, @RequestParam String city,
+                                               @RequestParam String country) {
+        return hotelService.getHotelsOwnedByUser(user, name, city, country);
+    }
 }
