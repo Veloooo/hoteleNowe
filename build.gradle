@@ -31,12 +31,12 @@ dependencies {
 				.forEach { group -> exclude(group: group) }
 	}
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+//	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+//	}
+//	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+//	}
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -63,6 +63,9 @@ dependencies {
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.1.1'
 	implementation group: 'org.springframework.security', name: 'spring-security-web'
 	implementation group: 'org.springframework.security', name: 'spring-security-config'
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.7.2'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.1'
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.11.1'
 }
 
 dependencyManagement {

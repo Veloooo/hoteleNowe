@@ -6,8 +6,8 @@ import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.HotelRepository;
 import com.crud.hotels.backend.repository.UserRepository;
+import com.neovisionaries.i18n.CountryCode;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,31 +72,6 @@ public class HotelService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<HotelDto> getAllHotelsWithFreeRooms(String filterText) {
-        List<Hotel> hotels;
-        if (filterText == null || filterText.isEmpty()) {
-            hotels = hotelRepository.getAllHotelsWithFreeRooms();
-        } else {
-            hotels = hotelRepository.findAllByNameContaining(filterText);
-        }
-        return hotels.stream()
-                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<HotelDto> getAllHotelsWithFreeRooms(String filterText, LocalDate dateFrom, LocalDate dateTo) {
-        List<Hotel> hotels;
-        if (filterText == null || filterText.isEmpty()) {
-            hotels = hotelRepository.getAllHotelsWithFreeRooms();
-        } else {
-            hotels = hotelRepository.findAllByNameContaining(filterText);
-        }
-        return hotels.stream()
-                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
-                .collect(Collectors.toList());
-    }
 
     @Transactional(readOnly = true)
     public boolean checkIfHotelAvailable(Long id) {
