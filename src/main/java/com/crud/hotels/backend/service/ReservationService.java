@@ -98,7 +98,8 @@ public class ReservationService {
         reservation.setDaysTotal(reservationDto.getDaysTotal());
         reservation.setPriceTotal(reservationDto.getPriceTotal());
         reservation.setPaid(reservationDto.getPaid());
-        return reservation;
+
+        return reservationRepository.save(reservation);
     }
 
     public void deleteReservation(Long reservationId) {
