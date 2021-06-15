@@ -7,6 +7,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -14,11 +15,14 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
+
+import java.util.*;
+
 public class HotelForm extends FormLayout {
 
     TextField name = new TextField("Name");
     TextField city = new TextField("City");
-    TextField country = new TextField("Country");
+    ComboBox<String> country = new ComboBox<>("Country");
 
     Button save = new Button("Save");
     Button delete = new Button("Delete");
@@ -29,6 +33,15 @@ public class HotelForm extends FormLayout {
     public HotelForm(){
         addClassName("hotel-form");
         binder.bindInstanceFields(this);
+
+        String[] countryCodes = Locale.getISOCountries();
+        List<String> countriesList = new ArrayList<>();
+        for (String countryCode : countryCodes) {
+            Locale obj = new Locale("", countryCode);
+            countriesList.add(obj.getDisplayCountry(Locale.ENGLISH));
+        }
+        Collections.sort(countriesList);
+        country.setItems(countriesList);
 
         add(name, city, country, createButtonsLayout());
     }

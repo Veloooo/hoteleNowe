@@ -30,6 +30,10 @@ public class Hotel {
 
     @Column
     @NonNull
+    private String currency;
+
+    @Column
+    @NonNull
     private Integer totalRooms;
 
     @Column
@@ -53,9 +57,8 @@ public class Hotel {
 
         private String city;
 
-        private Integer totalRooms;
+        private String currency;
 
-        private Integer freeRooms;
 
         public Builder hotelName(String name) {
             this.name = name;
@@ -72,23 +75,19 @@ public class Hotel {
             return this;
         }
 
-        public Builder hotelTotalRooms(Integer totalRooms) {
-            this.totalRooms = totalRooms;
+        public Builder hotelCurrency(String currency) {
+            this.currency = currency;
             return this;
         }
 
-        public Builder hotelFreeRooms(Integer freeRooms) {
-            this.freeRooms = freeRooms;
-            return this;
-        }
+
 
         public Hotel build() {
             Hotel hotel = new Hotel();
             hotel.setName(this.name);
             hotel.setCountry(this.country);
             hotel.setCity(this.city);
-            hotel.setFreeRooms(this.freeRooms);
-            hotel.setTotalRooms(this.totalRooms);
+            hotel.setCurrency(this.currency);
             return hotel;
         }
     }

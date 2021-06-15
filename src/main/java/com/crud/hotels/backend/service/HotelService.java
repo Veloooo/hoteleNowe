@@ -112,8 +112,7 @@ public class HotelService {
                 .hotelName(hotelDto.getName())
                 .hotelCountry(hotelDto.getCountry())
                 .hotelCity(hotelDto.getCity())
-                .hotelTotalRooms(hotelDto.getTotalRooms())
-                .hotelFreeRooms(hotelDto.getTotalRooms())
+                .hotelCurrency(CountryCode.findByName(hotelDto.getCountry()).get(0).getCurrency().getCurrencyCode())
                 .build();
         User user = userRepository.findUserByLogin(hotelDto.getOwner().getLogin());
         user.addHotel(hotel);

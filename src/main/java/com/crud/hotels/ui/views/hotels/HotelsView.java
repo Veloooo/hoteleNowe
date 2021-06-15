@@ -11,7 +11,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -58,8 +57,6 @@ public class HotelsView extends VerticalLayout {
     private void saveHotel(HotelForm.SaveEvent evt) {
         if (evt.getHotel().getId() == null) {
             HotelDto hotelDto = evt.getHotel();
-            hotelDto.setFreeRooms(0);
-            hotelDto.setTotalRooms(0);
             hotelDto.setOwner(currentUser);
             hotelService.createHotel(hotelDto);
         } else
@@ -114,7 +111,7 @@ public class HotelsView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassName("hotel-grid");
         grid.setSizeFull();
-        grid.setColumns("name", "city", "country", "freeRooms", "totalRooms");
+        grid.setColumns("name", "city", "country");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         grid.asSingleSelect().addValueChangeListener(event -> editHotel(event.getValue()));

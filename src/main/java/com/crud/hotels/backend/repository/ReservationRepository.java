@@ -11,15 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends CrudRepository<Reservation, Long> {
-    List<Reservation> findAll();
-
     List<Reservation> findAllByUser(User user);
 
     Reservation getReservationById(Long id);
 
-    Reservation save(Reservation task);
-
-    void deleteById(Long taskId);
-
-    void deleteAll();
 }

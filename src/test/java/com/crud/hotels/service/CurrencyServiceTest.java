@@ -26,7 +26,7 @@ public class CurrencyServiceTest {
 
     @Test
     public void shouldBeApprox3(){
-        double dollarsAmount = currencyService.getValueInOtherCurrency(Currency.getInstance("PLN"), Currency.getInstance("USD"), 10);
+        double dollarsAmount = currencyService.getValueInOtherCurrency("PLN", "USD", 10);
         System.out.println(dollarsAmount);
         assertThat(dollarsAmount).isBetween(2.5, 3.5);
     }

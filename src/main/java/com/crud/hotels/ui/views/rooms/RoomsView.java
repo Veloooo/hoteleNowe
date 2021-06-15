@@ -183,8 +183,18 @@ public class RoomsView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassName("hotel-grid");
         grid.setSizeFull();
-        grid.setColumns("name", "pricePerNight", "guestsNumber");
+        grid.setColumns("name", "guestsNumber");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        if(currentUser.getRole().equals("ROLE_OWNER")) {
+            grid.addColumn(
+                    RoomDto::getPricePerNight
+            ).setHeader("Price");
+        }
+        else{
+            grid.addColumn(
+                    RoomDto::getPricePerNightInUserCurrency
+            ).setHeader("Price");
+        }
         grid.addColumn(
                 h -> h.getHotel().getName()
         ).setHeader("Hotel");
@@ -225,7 +235,8 @@ public class RoomsView extends VerticalLayout {
                     guestsNumber.getValue(),
                     pricePerNight.getValue(),
                     tempMin.getValue(),
-                    hotel.getValue() == null ? "" : hotel.getValue().getName()
+                    hotel.getValue() == null ? "" : hotel.getValue().getName(),
+                    "PLN"
             ));
     }
 }

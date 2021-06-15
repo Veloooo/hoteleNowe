@@ -24,10 +24,7 @@ public class HotelDto {
     private String city;
 
     @NotNull
-    private Integer totalRooms;
-
-    @NotNull
-    private Integer freeRooms;
+    private String currency;
 
     @NotNull
     private UserDto owner;

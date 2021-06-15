@@ -31,11 +31,5 @@ public class RoomController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/available")
-    public List<RoomDto> getAvailableRoomsForHotel(@PathVariable Long hotelId) {
-        return roomService.getAllAvailableRoomsForHotel(hotelId)
-                .stream()
-                .map(room -> modelMapper.map(room, RoomDto.class))
-                .collect(Collectors.toList());
-    }
+
 }

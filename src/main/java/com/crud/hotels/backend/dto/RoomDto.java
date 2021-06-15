@@ -18,6 +18,8 @@ public class RoomDto {
 
     private Double pricePerNight;
 
+    private Double pricePerNightInUserCurrency;
+
     private HotelDto hotel;
 
     private List<ReservationDto> reservations;

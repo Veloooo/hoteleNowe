@@ -23,13 +23,17 @@ import java.util.stream.Collectors;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final WeatherService weatherService;
+    private final CurrencyService currencyService;
     private final ModelMapper modelMapper;
 
+
+
     @Autowired
-    public RoomService(RoomRepository roomRepository, ModelMapper modelMapper, WeatherService weatherService) {
+    public RoomService(RoomRepository roomRepository, ModelMapper modelMapper, WeatherService weatherService, CurrencyService currencyService) {
         this.modelMapper = modelMapper;
         this.roomRepository = roomRepository;
         this.weatherService = weatherService;
+        this.currencyService = currencyService;
     }
 
     public List<Room> getAllRoomsForHotel(Long id) {
@@ -78,7 +82,7 @@ public class RoomService {
 
 
     @Transactional(readOnly = true)
-    public List<RoomDto> findAllWithCriteria(String name, LocalDate dateFromValue, LocalDate dateToValue, Double guestsNumberValue, Double pricePerNightValue, Double tempMinValue, String hotelName) {
+    public List<RoomDto> findAllWithCriteria(String name, LocalDate dateFromValue, LocalDate dateToValue, Double guestsNumberValue, Double pricePerNightValue, Double tempMinValue, String hotelName, String userLocale) {
         List<Room> rooms = roomRepository.findAll()
                 .stream()
                 .filter(room ->
@@ -92,8 +96,21 @@ public class RoomService {
 
                 .collect(Collectors.toList());
 
-        return rooms.stream().map(room -> modelMapper.map(room, RoomDto.class))
+        return rooms.stream()
+                .map(room -> modelMapper.map(room, RoomDto.class))
+                .map(room -> setPriceInUserCurrency(room, userLocale))
                 .collect(Collectors.toList());
+    }
+
+    private RoomDto setPriceInUserCurrency(RoomDto room, String userCurrency) {
+        room.setPricePerNightInUserCurrency(
+                currencyService.getValueInOtherCurrency(
+                        room.getHotel().getCurrency(),
+                        userCurrency,
+                        room.getPricePerNight()
+                )
+        );
+        return room;
     }
 
     @Transactional(readOnly = true)

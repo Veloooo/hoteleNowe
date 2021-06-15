@@ -5,6 +5,7 @@ import com.posadskiy.currencyconverter.config.ConfigBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.Currency;
+import java.util.Locale;
 
 @Service
 public class CurrencyService {
@@ -21,8 +22,8 @@ public class CurrencyService {
         return converter.rate(sourceCurrency.getCurrencyCode(), targetCurrency.getCurrencyCode());
     }
 
-    public double getValueInOtherCurrency(Currency sourceCurrency, Currency targetCurrency, double sourceCurrencyAmount) {
-        return sourceCurrencyAmount / converter.rate(sourceCurrency.getCurrencyCode(), targetCurrency.getCurrencyCode());
+    public double getValueInOtherCurrency(String sourceCurrencyCode, String destinationCurrencyCode, double sourceCurrencyAmount) {
+        return sourceCurrencyAmount / converter.rate(sourceCurrencyCode, destinationCurrencyCode);
     }
 
 }

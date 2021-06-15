@@ -13,13 +13,12 @@ import okhttp3.Request;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
+import javax.naming.ldap.HasControls;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.neovisionaries.i18n.CountryCode.findByName;
@@ -40,7 +39,13 @@ public class WeatherService {
     public static final String API_FORECAST_URL = "https://community-open-weather-map.p.rapidapi.com/forecast?q=";
 
 
+    private Map<String, WeatherInfo> cachedTempInfo = new HashMap<>();
+
+
     public WeatherInfo forecastFor5Days(String city, String countryCode) {
+        if(cachedTempInfo.containsKey(city))
+            return cachedTempInfo.get(city);
+
         Request request = new Request.Builder()
                 .url(API_FORECAST_URL + city + "," + countryCode)
                 .get()
@@ -49,6 +54,7 @@ public class WeatherService {
                 .build();
 
         WeatherInfo info = null;
+
         try {
             info = execute(request);
         } catch (IOException e) {
@@ -57,6 +63,8 @@ public class WeatherService {
         Objects.requireNonNull(info).setList(info.getList().stream()
                 .map(this::mapToCelcius)
                 .collect(Collectors.toList()));
+
+        cachedTempInfo.put(city, info);
         return info;
     }
 

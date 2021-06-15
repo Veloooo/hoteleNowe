@@ -36,11 +36,5 @@ public class WeatherServiceTest {
                 TimeZone.getDefault().toZoneId()).getDayOfYear() == LocalDateTime.now().getDayOfYear())).isTrue();
     }
 
-    @Test
-    public void shouldBeFilteredByDays() {
-        WeatherInfo info = weatherService.forecastFor5Days("Krakow", "PL");
-        List<Items> data = weatherService.getDataForCityForDay("Krakow", "PL", LocalDateTime.now().plusDays(1).withHour(0));
-        assertThat(info.getList().size() / 5).isEqualTo(data.size());
-    }
 
 }
