@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TimeZone;
@@ -30,7 +31,7 @@ public class WeatherServiceTest {
 
     @Test
     public void shouldReturnDataForCityForGivenDay() {
-        List<Items> data = weatherService.getDataForCityForDay("Krakow", "PL", LocalDateTime.now());
+        List<Items> data = weatherService.getDataForCityForInterval("Krakow", "PL", LocalDate.now(), LocalDate.now().plusDays(5));
         assertThat(data.stream().allMatch(d -> LocalDateTime.ofInstant(Instant.ofEpochSecond(d.getDt()),
                 TimeZone.getDefault().toZoneId()).getDayOfYear() == LocalDateTime.now().getDayOfYear())).isTrue();
     }

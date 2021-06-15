@@ -35,10 +35,6 @@ public class HotelService {
         this.modelMapper = modelMapper;
     }
 
-    private static boolean accept(Hotel hotel) {
-        return hotel.getFreeRooms() > 0;
-    }
-
     @Transactional(readOnly = true)
     public List<HotelDto> getAllHotels() {
         return hotelRepository.findAll().stream()
@@ -68,6 +64,8 @@ public class HotelService {
                 .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                 .collect(Collectors.toList());
     }
+
+
     @Transactional(readOnly = true)
     public List<HotelDto> getHotelsOwnedByUser(String login) {
         return hotelRepository.findAllByOwner(userRepository.findUserByLogin(login)).stream()
@@ -137,31 +135,6 @@ public class HotelService {
             hotelRepository.deleteById(hotelId);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException();
-        }
-    }
-
-    @PostConstruct
-    public void insertSampleData() {
-        if (hotelRepository.count() < 5) {
-            hotelRepository.saveAll(
-                    Stream.of("Krakowiak,Poland,Krakow,10,20,Bogdan",
-                            "DetucheHotel,Germany,Berlin,1,21,Bogdan",
-                            "Matrioszka,Ukraine,Kiev,22,33,Janusz",
-                            "Marriot,Poland,Warszawa,0,10,Janusz")
-                            .map(name -> {
-                                        String[] split = name.split(",");
-                                        Hotel hotel = new Hotel();
-                                        hotel.setName(split[0]);
-                                        hotel.setCountry(split[1]);
-                                        hotel.setCity(split[2]);
-                                        hotel.setFreeRooms(Integer.valueOf(split[3]));
-                                        hotel.setTotalRooms(Integer.valueOf(split[4]));
-                                        User user = userRepository.findUserByLogin(split[5]);
-                                        user.addHotel(hotel);
-                                        return hotel;
-                                    }
-                            ).collect(Collectors.toList())
-            );
         }
     }
 }

@@ -3,6 +3,7 @@ package com.crud.hotels.ui.views.reservations;
 
 import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.service.ReservationService;
+import com.crud.hotels.backend.service.RoomService;
 import com.crud.hotels.ui.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -37,6 +38,7 @@ public class ReservationsView extends VerticalLayout {
         configureGrid();
 
         form = new ReservationForm();
+        form.addListener(ReservationForm.SaveEvent.class, this::saveReservation);
         form.addListener(ReservationForm.DeleteEvent.class, this::deleteReservation);
         form.addListener(ReservationForm.CloseEvent.class, e -> closeEditor());
         Div reservations = new Div(grid, form);
@@ -51,11 +53,8 @@ public class ReservationsView extends VerticalLayout {
 
 
     private void saveReservation(ReservationForm.SaveEvent evt) {
-        if (evt.getReservation().getId() == null) {
-            ReservationDto reservationDto = evt.getReservation();
-            reservationService.createReservation(reservationDto);
-        } //else
-           // hotelService.editHotel(Long.valueOf(evt.getHotel().getId()), evt.getHotel());
+        ReservationDto reservationDto = evt.getReservation();
+        reservationService.updateReservation(reservationDto);
         updateList();
         closeEditor();
     }
@@ -70,11 +69,6 @@ public class ReservationsView extends VerticalLayout {
         form.setReservationDto(null);
         form.setVisible(false);
         removeClassName("editing");
-    }
-
-    private void addHotel() {
-        grid.asSingleSelect().clear();
-        editReservation(new ReservationDto());
     }
 
     private void configureGrid() {

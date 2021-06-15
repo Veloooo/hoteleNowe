@@ -22,6 +22,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,12 +119,18 @@ public class RoomsView extends VerticalLayout {
         dateFrom.setPlaceholder("Date from");
         dateFrom.setClearButtonVisible(true);
         dateFrom.addValueChangeListener(e -> updateList());
+        dateFrom.addValueChangeListener(e -> setBookButtonEnabled());
         dateFrom.setLabel("Date from");
+        dateFrom.setInitialPosition(LocalDate.now());
+        dateFrom.setMin(LocalDate.now());
 
         dateTo.setPlaceholder("Date to");
         dateTo.setClearButtonVisible(true);
         dateTo.addValueChangeListener(e -> updateList());
+        dateTo.addValueChangeListener(e -> setBookButtonEnabled());
         dateTo.setLabel("Date to");
+        dateTo.setInitialPosition(LocalDate.now().plusDays(5));
+        dateTo.setMin(dateFrom.getValue() != null ? dateFrom.getValue() : LocalDate.now().plusDays(1));
 
         guestsNumber.setPlaceholder("Max guests number");
         guestsNumber.setClearButtonVisible(true);
@@ -158,6 +165,16 @@ public class RoomsView extends VerticalLayout {
         return toolbar;
     }
 
+    private void setBookButtonEnabled() {
+        form.setAreDatesSelected(dateFrom.getValue() != null && dateTo.getValue() != null);
+        if(dateTo.getValue().isBefore(LocalDate.now().plusDays(6))) {
+            tempMin.setEnabled(true);
+        } else {
+            tempMin.setEnabled(false);
+            tempMin.setValue(null);
+        }
+    }
+
     private void addRoom() {
         grid.asSingleSelect().clear();
         editRoom(new RoomDto());
@@ -171,6 +188,13 @@ public class RoomsView extends VerticalLayout {
         grid.addColumn(
                 h -> h.getHotel().getName()
         ).setHeader("Hotel");
+
+        grid.addColumn(
+                h -> h.getHotel().getCity()
+        ).setHeader("City");
+        grid.addColumn(
+                h -> h.getHotel().getCountry()
+        ).setHeader("Country");
 
         grid.asSingleSelect().addValueChangeListener(event -> editRoom(event.getValue()));
     }
@@ -193,7 +217,7 @@ public class RoomsView extends VerticalLayout {
                             null, null, null, null))
                     .flatMap(List::stream)
                     .collect(Collectors.toList()));
-        else
+        else if(dateFrom.getValue() != null && dateTo.getValue() != null)
             grid.setItems(roomService.findAllWithCriteria(
                     name.getValue(),
                     dateFrom.getValue(),
@@ -201,7 +225,7 @@ public class RoomsView extends VerticalLayout {
                     guestsNumber.getValue(),
                     pricePerNight.getValue(),
                     tempMin.getValue(),
-                    hotel.getValue()
+                    hotel.getValue() == null ? "" : hotel.getValue().getName()
             ));
     }
 }

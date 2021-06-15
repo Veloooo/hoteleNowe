@@ -2,6 +2,7 @@ package com.crud.hotels.backend.repository;
 
 import com.crud.hotels.backend.domain.Reservation;
 import com.crud.hotels.backend.domain.User;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public interface ReservationRepository extends CrudRepository<Reservation, Long>
 
     List<Reservation> findAllByUser(User user);
 
-    Optional<Reservation> findTaskById(Long id);
+    Reservation getReservationById(Long id);
 
     Reservation save(Reservation task);
 

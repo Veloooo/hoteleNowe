@@ -32,9 +32,14 @@ public class Room {
 
     @OneToMany(mappedBy = "room",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST},
             orphanRemoval = true)
     private List<Reservation> reservations;
+
+    public void removeReservation(Reservation reservation){
+        reservation.setRoom(null);
+        reservations.remove(reservation);
+    }
 
     public static class Builder {
         private String name;

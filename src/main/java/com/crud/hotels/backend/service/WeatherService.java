@@ -5,6 +5,7 @@ import com.crud.hotels.backend.weather.WeatherInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neovisionaries.i18n.CountryCode;
 import lombok.Getter;
 import lombok.Setter;
 import okhttp3.OkHttpClient;
@@ -14,11 +15,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import static com.neovisionaries.i18n.CountryCode.findByName;
 
 @Service
 @Getter
@@ -64,15 +68,21 @@ public class WeatherService {
         return items;
     }
 
-    public List<Items> getDataForCityForDay(String city, String countryCode, LocalDateTime dateTime) {
+    public List<Items> getDataForCityForInterval(String city, String countryCode, LocalDate dateFrom, LocalDate dateTo) {
         WeatherInfo info = forecastFor5Days(city, countryCode);
 
         return info.getList().stream()
                 .filter(w ->
-                        LocalDateTime.ofInstant(Instant.ofEpochSecond(w.getDt()),
-                            TimeZone.getDefault().toZoneId()).getDayOfYear() == dateTime.getDayOfYear()
+                        LocalDate.ofEpochDay(Instant.ofEpochSecond(w.getDt()).getEpochSecond()).getDayOfYear() >= dateFrom.getDayOfYear() &&
+                        LocalDate.ofEpochDay(Instant.ofEpochSecond(w.getDt()).getEpochSecond()).getDayOfYear() <= dateTo.getDayOfYear()
                 )
                 .collect(Collectors.toList());
+    }
+
+    public Double getAverageTemperatureForRoomInGivenDates(String country, String city, LocalDate dateFromValue, LocalDate dateToValue) {
+        return getDataForCityForInterval(city, CountryCode.findByName(country).get(0).getName() , dateFromValue, dateToValue).stream()
+                .mapToDouble(sum -> sum.getMain().getTemp())
+                .summaryStatistics().getAverage();
     }
 
 

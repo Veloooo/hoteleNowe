@@ -7,6 +7,7 @@ import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.dto.UserDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.ReservationRepository;
+import com.crud.hotels.backend.repository.RoomRepository;
 import com.crud.hotels.backend.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,13 @@ public class ReservationService {
         User user = userRepository.findUserByLogin(reservationDto.getUser().getLogin());
         user.addReservation(reservation);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateReservation(ReservationDto reservationDto) {
+        Reservation reservation = reservationRepository.getReservationById(reservationDto.getId());
+        reservation.setPaid(reservationDto.getPaid());
+        reservationRepository.save(reservation);
     }
 
     @Transactional

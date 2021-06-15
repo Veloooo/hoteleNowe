@@ -22,6 +22,7 @@ import static com.crud.hotels.ui.MainLayout.currentUser;
 
 public class RoomForm extends FormLayout {
 
+    private boolean areDatesSelected = false;
     TextField name = new TextField("Name");
     NumberField pricePerNight = new NumberField("Price per night");
     NumberField guestsNumber = new NumberField("Max Guests");
@@ -46,7 +47,13 @@ public class RoomForm extends FormLayout {
         }
     }
 
+    public boolean isAreDatesSelected() {
+        return areDatesSelected;
+    }
 
+    public void setAreDatesSelected(boolean areDatesSelected) {
+        this.areDatesSelected = areDatesSelected;
+    }
 
     public void setRoomDto(RoomDto roomDto){
         binder.setBean(roomDto);
@@ -58,7 +65,7 @@ public class RoomForm extends FormLayout {
         book.addClickListener(click -> fireEvent(new BookEvent(this, binder.getBean())));
         close.addClickListener(click -> fireEvent(new CloseEvent(this)));
 
-        binder.addStatusChangeListener(evt -> book.setEnabled(binder.isValid()));
+        binder.addStatusChangeListener(evt -> book.setEnabled(binder.isValid() && isAreDatesSelected()));
 
         return new HorizontalLayout(book, close);
     }
