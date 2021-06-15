@@ -15,8 +15,10 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class HotelForm extends FormLayout {
 
@@ -30,7 +32,7 @@ public class HotelForm extends FormLayout {
 
     Binder<HotelDto> binder = new BeanValidationBinder<>(HotelDto.class);
 
-    public HotelForm(){
+    public HotelForm() {
         addClassName("hotel-form");
         binder.bindInstanceFields(this);
 
@@ -46,7 +48,7 @@ public class HotelForm extends FormLayout {
         add(name, city, country, createButtonsLayout());
     }
 
-    public void setHotelDto(HotelDto hotelDto){
+    public void setHotelDto(HotelDto hotelDto) {
         binder.setBean(hotelDto);
     }
 
@@ -67,7 +69,7 @@ public class HotelForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        if(binder.isValid())
+        if (binder.isValid())
             fireEvent(new SaveEvent(this, binder.getBean()));
     }
 

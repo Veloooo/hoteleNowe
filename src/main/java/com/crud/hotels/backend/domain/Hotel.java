@@ -73,7 +73,6 @@ public class Hotel {
         }
 
 
-
         public Hotel build() {
             Hotel hotel = new Hotel();
             hotel.setName(this.name);

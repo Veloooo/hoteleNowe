@@ -13,15 +13,14 @@ import okhttp3.Request;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import javax.naming.ldap.HasControls;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.neovisionaries.i18n.CountryCode.findByName;
 
 @Service
 @Getter
@@ -43,7 +42,7 @@ public class WeatherService {
 
 
     public WeatherInfo forecastFor5Days(String city, String countryCode) {
-        if(cachedTempInfo.containsKey(city))
+        if (cachedTempInfo.containsKey(city))
             return cachedTempInfo.get(city);
 
         Request request = new Request.Builder()
@@ -82,13 +81,13 @@ public class WeatherService {
         return info.getList().stream()
                 .filter(w ->
                         LocalDate.ofEpochDay(Instant.ofEpochSecond(w.getDt()).getEpochSecond()).getDayOfYear() >= dateFrom.getDayOfYear() &&
-                        LocalDate.ofEpochDay(Instant.ofEpochSecond(w.getDt()).getEpochSecond()).getDayOfYear() <= dateTo.getDayOfYear()
+                                LocalDate.ofEpochDay(Instant.ofEpochSecond(w.getDt()).getEpochSecond()).getDayOfYear() <= dateTo.getDayOfYear()
                 )
                 .collect(Collectors.toList());
     }
 
     public Double getAverageTemperatureForRoomInGivenDates(String country, String city, LocalDate dateFromValue, LocalDate dateToValue) {
-        return getDataForCityForInterval(city, CountryCode.findByName(country).get(0).getName() , dateFromValue, dateToValue).stream()
+        return getDataForCityForInterval(city, CountryCode.findByName(country).get(0).getName(), dateFromValue, dateToValue).stream()
                 .mapToDouble(sum -> sum.getMain().getTemp())
                 .summaryStatistics().getAverage();
     }

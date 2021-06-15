@@ -19,7 +19,7 @@ public class ReportScheduler {
     }
 
     @Scheduled(cron = "0 0 * * *")
-    public void generateReports(){
+    public void generateReports() {
         userService.generateReportsForOwner();
     }
 

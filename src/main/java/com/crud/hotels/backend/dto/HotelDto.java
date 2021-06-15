@@ -1,6 +1,5 @@
 package com.crud.hotels.backend.dto;
 
-import com.crud.hotels.backend.domain.Room;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

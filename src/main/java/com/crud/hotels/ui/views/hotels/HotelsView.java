@@ -5,7 +5,6 @@ import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.service.HotelService;
 import com.crud.hotels.ui.MainLayout;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;

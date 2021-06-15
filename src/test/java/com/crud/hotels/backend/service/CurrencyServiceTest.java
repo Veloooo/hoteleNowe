@@ -1,4 +1,4 @@
-package com.crud.hotels.service;
+package com.crud.hotels.backend.service;
 
 import com.crud.hotels.backend.service.CurrencyService;
 import org.junit.jupiter.api.Test;

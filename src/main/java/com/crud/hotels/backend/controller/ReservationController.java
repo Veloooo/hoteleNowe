@@ -41,7 +41,7 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createReservation(@RequestBody ReservationDto reservationDto) {
-       reservationService.createReservation(reservationDto);
+        reservationService.createReservation(reservationDto);
     }
 
 

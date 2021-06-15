@@ -18,6 +18,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 
 import java.util.List;
+
 import static com.crud.hotels.ui.MainLayout.currentUser;
 
 public class RoomForm extends FormLayout {
@@ -35,12 +36,12 @@ public class RoomForm extends FormLayout {
 
     Binder<RoomDto> binder = new BeanValidationBinder<>(RoomDto.class);
 
-    public RoomForm(List<HotelDto> hotels){
+    public RoomForm(List<HotelDto> hotels) {
         addClassName("hotel-form");
         binder.bindInstanceFields(this);
         hotel.setItems(hotels);
         hotel.setItemLabelGenerator(HotelDto::getName);
-        if("ROLE_OWNER".equals(currentUser.getRole()))
+        if ("ROLE_OWNER".equals(currentUser.getRole()))
             add(name, guestsNumber, pricePerNight, hotel, createButtonsLayoutForOwner());
         else {
             add(createButtonsLayoutForUser());
@@ -55,11 +56,11 @@ public class RoomForm extends FormLayout {
         this.areDatesSelected = areDatesSelected;
     }
 
-    public void setRoomDto(RoomDto roomDto){
+    public void setRoomDto(RoomDto roomDto) {
         binder.setBean(roomDto);
     }
 
-    private Component createButtonsLayoutForUser(){
+    private Component createButtonsLayoutForUser() {
         book.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         book.addClickListener(click -> fireEvent(new BookEvent(this, binder.getBean())));
@@ -88,7 +89,7 @@ public class RoomForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        if(binder.isValid())
+        if (binder.isValid())
             fireEvent(new SaveEvent(this, binder.getBean()));
     }
 

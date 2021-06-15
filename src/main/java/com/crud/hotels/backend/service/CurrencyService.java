@@ -5,7 +5,6 @@ import com.posadskiy.currencyconverter.config.ConfigBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.Currency;
-import java.util.Locale;
 
 @Service
 public class CurrencyService {

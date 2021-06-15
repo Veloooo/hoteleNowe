@@ -1,4 +1,3 @@
-
 package com.crud.hotels.backend.weather;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,8 +9,8 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "type",
-    "properties"
+        "type",
+        "properties"
 })
 @Generated("jsonschema2pojo")
 public class Items {
@@ -90,10 +89,12 @@ public class Items {
     public Main getMain() {
         return main;
     }
+
     @JsonProperty("main")
     public void setMain(Main main) {
         this.main = main;
     }
+
     public Items withDt(Main main) {
         this.main = main;
         return this;
@@ -104,10 +105,12 @@ public class Items {
     public List<Weather> getWeather() {
         return weather;
     }
+
     @JsonProperty("weather")
     public void setWeather(List<Weather> weather) {
         this.weather = weather;
     }
+
     public Items withWeather(List<Weather> weather) {
         this.weather = weather;
         return this;
@@ -117,10 +120,12 @@ public class Items {
     public Clouds getClouds() {
         return clouds;
     }
+
     @JsonProperty("clouds")
     public void setClouds(Clouds clouds) {
         this.clouds = clouds;
     }
+
     public Items withClouds(Clouds clouds) {
         this.clouds = clouds;
         return this;
@@ -130,10 +135,12 @@ public class Items {
     public Wind getWind() {
         return wind;
     }
+
     @JsonProperty("wind")
     public void setWind(Wind wind) {
         this.wind = wind;
     }
+
     public Items withWind(Wind wind) {
         this.wind = wind;
         return this;
@@ -144,10 +151,12 @@ public class Items {
     public Long getVisibility() {
         return visibility;
     }
+
     @JsonProperty("visibility")
     public void setVisibility(Long visibility) {
         this.visibility = visibility;
     }
+
     public Items withVisibility(Long visibility) {
         this.visibility = visibility;
         return this;
@@ -158,10 +167,12 @@ public class Items {
     public Long getPop() {
         return pop;
     }
+
     @JsonProperty("pop")
     public void setPop(Long pop) {
         this.pop = pop;
     }
+
     public Items withPop(Long pop) {
         this.pop = pop;
         return this;
@@ -172,10 +183,12 @@ public class Items {
     public Sys getSys() {
         return sys;
     }
+
     @JsonProperty("sys")
     public void setSys(Sys sys) {
         this.sys = sys;
     }
+
     public Items withSys(Sys sys) {
         this.sys = sys;
         return this;
@@ -186,10 +199,12 @@ public class Items {
     public String getDtTxt() {
         return dtTxt;
     }
+
     @JsonProperty("dt_txt")
     public void setDtTxt(String dtTxt) {
         this.dtTxt = dtTxt;
     }
+
     public Items withDt(String dtTxt) {
         this.dtTxt = dtTxt;
         return this;

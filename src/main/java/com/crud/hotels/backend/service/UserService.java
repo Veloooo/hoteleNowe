@@ -1,6 +1,5 @@
 package com.crud.hotels.backend.service;
 
-import com.crud.hotels.backend.domain.Hotel;
 import com.crud.hotels.backend.domain.User;
 import com.crud.hotels.backend.domain.UserReport;
 import com.crud.hotels.backend.dto.HotelDto;
@@ -53,18 +52,18 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public void generateReportsForOwner() {
-        List<User> owners =  userRepository.findAllByHotelsNotEmpty();
+        List<User> owners = userRepository.findAllByHotelsNotEmpty();
         owners.stream()
-                .map( owner ->
+                .map(owner ->
                 {
                     owner.addReport(new UserReport.Builder()
                             .reportDate(LocalDate.now())
                             .roomsRented(
                                     (int) owner.getHotels().stream()
-                                    .map(hotel -> hotel.getRooms().stream()
-                                            .map(room -> room.getReservations().stream()
-                                                    .filter(reservation -> reservation.getCreateDate().equals(LocalDate.now()))
-                                                    .count())).count())
+                                            .map(hotel -> hotel.getRooms().stream()
+                                                    .map(room -> room.getReservations().stream()
+                                                            .filter(reservation -> reservation.getCreateDate().equals(LocalDate.now()))
+                                                            .count())).count())
                             .owner(owner)
                             .build());
                     return userRepository.save(owner);

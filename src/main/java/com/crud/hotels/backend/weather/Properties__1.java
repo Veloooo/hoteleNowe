@@ -1,4 +1,3 @@
-
 package com.crud.hotels.backend.weather;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,13 +8,13 @@ import javax.annotation.Generated;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "dt",
-    "main",
-    "weather",
-    "clouds",
-    "wind",
-    "sys",
-    "dt_txt"
+        "dt",
+        "main",
+        "weather",
+        "clouds",
+        "wind",
+        "sys",
+        "dt_txt"
 })
 @Generated("jsonschema2pojo")
 public class Properties__1 {

@@ -1,6 +1,7 @@
 package com.crud.hotels.backend.domain;
 
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class Room {
             orphanRemoval = true)
     private List<Reservation> reservations;
 
-    public void removeReservation(Reservation reservation){
+    public void removeReservation(Reservation reservation) {
         reservation.setRoom(null);
         reservations.remove(reservation);
     }

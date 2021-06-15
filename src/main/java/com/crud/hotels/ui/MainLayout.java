@@ -26,7 +26,8 @@ public class MainLayout extends AppLayout {
 
     public static UserDto currentUser;
     private UserService userService;
-    public MainLayout(UserService userService){
+
+    public MainLayout(UserService userService) {
         this.userService = userService;
         getCurrentUser();
         createHeader();
@@ -40,7 +41,7 @@ public class MainLayout extends AppLayout {
         roomsList.setHighlightCondition(HighlightConditions.sameLocation());
         RouterLink reservationsList = new RouterLink("Reservations List", ReservationsView.class);
         reservationsList.setHighlightCondition(HighlightConditions.sameLocation());
-        if(currentUser.getRole().equals("ROLE_USER"))
+        if (currentUser.getRole().equals("ROLE_USER"))
             addToDrawer(new VerticalLayout(
                     roomsList,
                     reservationsList,
@@ -75,7 +76,7 @@ public class MainLayout extends AppLayout {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof UserDetails) {
-                currentUserName = ((UserDetails)principal).getUsername();
+                currentUserName = ((UserDetails) principal).getUsername();
             } else {
                 currentUserName = principal.toString();
             }

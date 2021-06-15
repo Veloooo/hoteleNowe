@@ -1,4 +1,3 @@
-
 package com.crud.hotels.backend.weather;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,8 +8,8 @@ import javax.annotation.Generated;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "type",
-    "properties"
+        "type",
+        "properties"
 })
 @Generated("jsonschema2pojo")
 public class Main {
@@ -27,6 +26,7 @@ public class Main {
     private Double tempMin;
     @JsonProperty("temp_max")
     private Double tempMax;
+
     @JsonProperty("type")
     public String getType() {
         return type;
@@ -56,34 +56,42 @@ public class Main {
         this.properties = properties;
         return this;
     }
+
     @JsonProperty("temp")
     public Double getTemp() {
         return temp;
     }
+
     @JsonProperty("temp")
     public void setTemp(Double temp) {
         this.temp = temp;
     }
+
     @JsonProperty("feels_like")
     public Double getFeelsLike() {
         return feelsLike;
     }
+
     @JsonProperty("feels_like")
     public void setFeelsLike(Double feelsLike) {
         this.feelsLike = feelsLike;
     }
+
     @JsonProperty("temp_min")
     public Double getTempMin() {
         return tempMin;
     }
+
     @JsonProperty("temp_min")
     public void setTempMin(Double tempMin) {
         this.tempMin = tempMin;
     }
+
     @JsonProperty("temp_max")
     public Double getTempMax() {
         return tempMax;
     }
+
     @JsonProperty("temp_max")
     public void setTempMax(Double tempMax) {
         this.tempMax = tempMax;

@@ -23,7 +23,6 @@ public class RoomService {
     private final ModelMapper modelMapper;
 
 
-
     @Autowired
     public RoomService(RoomRepository roomRepository, ModelMapper modelMapper, WeatherService weatherService, CurrencyService currencyService) {
         this.modelMapper = modelMapper;
@@ -35,7 +34,6 @@ public class RoomService {
     public List<Room> getAllRoomsForHotel(Long id) {
         return roomRepository.getAllByHotel_Id(id);
     }
-
 
 
     public void deleteRoom(Long id) {
@@ -127,19 +125,20 @@ public class RoomService {
 
 
     private boolean tempMatch(Double tempMinValue, String country, String city, LocalDate dateFromValue, LocalDate dateToValue) {
-        if(tempMinValue == null) return true;
-        else return tempMinValue <= weatherService.getAverageTemperatureForRoomInGivenDates(country, city, dateFromValue, dateToValue);
+        if (tempMinValue == null) return true;
+        else
+            return tempMinValue <= weatherService.getAverageTemperatureForRoomInGivenDates(country, city, dateFromValue, dateToValue);
 
     }
 
 
-    private boolean guestsNumberMatch(Double roomCapacity, Double guestsNumber){
-        if(guestsNumber == null) return true;
+    private boolean guestsNumberMatch(Double roomCapacity, Double guestsNumber) {
+        if (guestsNumber == null) return true;
         else return roomCapacity >= guestsNumber;
     }
 
-    private boolean priceMatch(Double roomPrice, Double maximumPrice){
-        if(maximumPrice == null) return true;
+    private boolean priceMatch(Double roomPrice, Double maximumPrice) {
+        if (maximumPrice == null) return true;
         else return roomPrice >= maximumPrice;
     }
 
@@ -150,13 +149,10 @@ public class RoomService {
 
     private boolean datesOverlaps(LocalDate dateFrom1, LocalDate dateTo1, LocalDate dateFrom2, LocalDate dateTo2) {
         return (dateFrom2.isAfter(dateFrom1) || dateFrom2.equals(dateFrom1)) &&
-                (dateFrom2.isBefore(dateTo1) || dateFrom2.equals(dateTo1))  ||
+                (dateFrom2.isBefore(dateTo1) || dateFrom2.equals(dateTo1)) ||
                 (dateTo2.isAfter(dateFrom1) || dateTo2.equals(dateFrom1)) &&
-                (dateTo2.isBefore(dateTo1) || dateTo2.equals(dateTo1));
+                        (dateTo2.isBefore(dateTo1) || dateTo2.equals(dateTo1));
     }
-
-
-
 
 
 }

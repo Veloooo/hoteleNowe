@@ -167,7 +167,7 @@ public class RoomsView extends VerticalLayout {
 
     private void setBookButtonEnabled() {
         form.setAreDatesSelected(dateFrom.getValue() != null && dateTo.getValue() != null);
-        if(dateTo.getValue().isBefore(LocalDate.now().plusDays(6))) {
+        if (dateTo.getValue().isBefore(LocalDate.now().plusDays(6))) {
             tempMin.setEnabled(true);
         } else {
             tempMin.setEnabled(false);
@@ -185,12 +185,11 @@ public class RoomsView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("name", "guestsNumber");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
-        if(currentUser.getRole().equals("ROLE_OWNER")) {
+        if (currentUser.getRole().equals("ROLE_OWNER")) {
             grid.addColumn(
                     RoomDto::getPricePerNight
             ).setHeader("Price");
-        }
-        else{
+        } else {
             grid.addColumn(
                     RoomDto::getPricePerNightInUserCurrency
             ).setHeader("Price");
@@ -227,7 +226,7 @@ public class RoomsView extends VerticalLayout {
                             null, null, null, null))
                     .flatMap(List::stream)
                     .collect(Collectors.toList()));
-        else if(dateFrom.getValue() != null && dateTo.getValue() != null)
+        else if (dateFrom.getValue() != null && dateTo.getValue() != null)
             grid.setItems(roomService.findAllWithCriteria(
                     name.getValue(),
                     dateFrom.getValue(),

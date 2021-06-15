@@ -1,6 +1,5 @@
 package com.crud.hotels.ui.views.reservations;
 
-import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.dto.ReservationDto;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -25,14 +24,14 @@ public class ReservationForm extends FormLayout {
 
     Binder<ReservationDto> binder = new BeanValidationBinder<>(ReservationDto.class);
 
-    public ReservationForm(){
+    public ReservationForm() {
         addClassName("hotel-form");
         binder.bindInstanceFields(this);
 
         add(paid, createButtonsLayout());
     }
 
-    public void setReservationDto(ReservationDto reservationDto){
+    public void setReservationDto(ReservationDto reservationDto) {
         binder.setBean(reservationDto);
     }
 
@@ -57,7 +56,7 @@ public class ReservationForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        if(binder.isValid())
+        if (binder.isValid())
             fireEvent(new SaveEvent(this, binder.getBean()));
     }
 

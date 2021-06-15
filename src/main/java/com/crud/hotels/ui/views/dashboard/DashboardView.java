@@ -14,7 +14,7 @@ public class DashboardView extends VerticalLayout {
 
     private final HotelService hotelService;
 
-    public DashboardView(HotelService service){
+    public DashboardView(HotelService service) {
         this.hotelService = service;
 
         addClassName("dashboard-view");
