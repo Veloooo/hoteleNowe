@@ -58,12 +58,14 @@ public class HotelController {
                 .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                 .collect(Collectors.toList());
     }
-
+/*
     @GetMapping(path = "/{hotelId}/available")
     public boolean checkIfHotelAvailable(@PathVariable Long hotelId) {
         return hotelService.checkIfHotelAvailable(hotelId);
     }
 
+
+ */
     @GetMapping(path = "/owned/{user}")
     public List<HotelDto> getHotelsOwnedByUser(@PathVariable String user) {
         return hotelService.getHotelsOwnedByUser(user);

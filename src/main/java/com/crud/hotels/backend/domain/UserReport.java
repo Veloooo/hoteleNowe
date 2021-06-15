@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,5 +27,36 @@ public class UserReport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    public static class Builder {
+        private LocalDate reportDate;
+        private Integer roomsRented;
+        private User owner;
+
+
+        public UserReport.Builder reportDate(LocalDate reportDate) {
+            this.reportDate = reportDate;
+            return this;
+        }
+
+        public UserReport.Builder roomsRented(Integer roomsRented) {
+            this.roomsRented = roomsRented;
+            return this;
+        }
+
+        public UserReport.Builder owner(User owner) {
+            this.owner = owner;
+            return this;
+        }
+
+
+        public UserReport build() {
+            UserReport userReport = new UserReport();
+            userReport.setReportDate(this.reportDate);
+            userReport.setOwner(this.owner);
+            userReport.setRoomsRented(this.roomsRented);
+            return userReport;
+        }
+    }
 
 }

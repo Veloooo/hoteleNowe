@@ -2,6 +2,7 @@ package com.crud.hotels.backend.service;
 
 import com.crud.hotels.backend.domain.Hotel;
 import com.crud.hotels.backend.domain.User;
+import com.crud.hotels.backend.domain.UserReport;
 import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.dto.UserDto;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +49,28 @@ public class UserService {
                 user.getHotels().stream()
                         .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                         .collect(Collectors.toList()));
+    }
+
+    @Transactional(readOnly = true)
+    public void generateReportsForOwner() {
+        List<User> owners =  userRepository.findAllByHotelsNotEmpty();
+        owners.stream()
+                .map( owner ->
+                {
+                    owner.addReport(new UserReport.Builder()
+                            .reportDate(LocalDate.now())
+                            .roomsRented(
+                                    (int) owner.getHotels().stream()
+                                    .map(hotel -> hotel.getRooms().stream()
+                                            .map(room -> room.getReservations().stream()
+                                                    .filter(reservation -> reservation.getCreateDate().equals(LocalDate.now()))
+                                                    .count())).count())
+                            .owner(owner)
+                            .build());
+                    return userRepository.save(owner);
+                }).collect(Collectors.toList());
+        ;
+
     }
 
 

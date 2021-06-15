@@ -69,14 +69,15 @@ public class HotelService {
                 .collect(Collectors.toList());
     }
 
-
+    /*
     @Transactional(readOnly = true)
-    public boolean checkIfHotelAvailable(Long id) {
+    public boolean checkIfHotelAvailable(Long id, ) {
         return hotelRepository.getHotelById(id)
                 .orElseThrow(EntityNotFoundException::new)
                 .getFreeRooms() > 0;
     }
 
+     */
     @Transactional
     public void createHotel(HotelDto hotelDto) {
         Hotel hotel = new Hotel.Builder()

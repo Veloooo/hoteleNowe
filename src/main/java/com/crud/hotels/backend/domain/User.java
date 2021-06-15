@@ -68,12 +68,12 @@ public class User {
     private List<UserReport> reports;
 
 
-    public void addHotel(UserReport report) {
+    public void addReport(UserReport report) {
         reports.add(report);
         report.setOwner(this);
     }
 
-    public void removeHotel(UserReport report) {
+    public void removeReport(UserReport report) {
         reports.remove(report);
         report.setOwner(null);
     }
