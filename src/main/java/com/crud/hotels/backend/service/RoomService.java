@@ -2,8 +2,6 @@ package com.crud.hotels.backend.service;
 
 import com.crud.hotels.backend.domain.Hotel;
 import com.crud.hotels.backend.domain.Room;
-import com.crud.hotels.backend.dto.HotelDto;
-import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.dto.RoomDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.RoomRepository;
@@ -13,9 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +76,14 @@ public class RoomService {
                 .collect(Collectors.toList());
     }
 
+
+    public List<RoomDto> findAllWithCriteria(LocalDate dateFrom, LocalDate dateTo) {
+        return findAllWithCriteria(null, dateFrom, dateTo, null, null, null, null, null);
+    }
+
+    public List<RoomDto> findAllWithCriteria(Double guests) {
+        return findAllWithCriteria(null, null, null, guests, null, null, null, null);
+    }
 
     @Transactional(readOnly = true)
     public List<RoomDto> findAllWithCriteria(String name, LocalDate dateFromValue, LocalDate dateToValue, Double guestsNumberValue, Double pricePerNightValue, Double tempMinValue, String hotelName, String userLocale) {
