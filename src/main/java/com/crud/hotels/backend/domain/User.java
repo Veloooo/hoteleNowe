@@ -60,6 +60,25 @@ public class User {
         hotel.setOwner(null);
     }
 
+
+    @OneToMany(mappedBy = "owner",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST},
+            orphanRemoval = true)
+    private List<UserReport> reports;
+
+
+    public void addHotel(UserReport report) {
+        reports.add(report);
+        report.setOwner(this);
+    }
+
+    public void removeHotel(UserReport report) {
+        reports.remove(report);
+        report.setOwner(null);
+    }
+
+
     public static class Builder {
         private String login;
         private String password;

@@ -19,6 +19,9 @@ public class Reservation {
     private Long id;
 
     @Column
+    private LocalDate createDate;
+
+    @Column
     private LocalDate dateFrom;
 
     @Column
@@ -44,6 +47,7 @@ public class Reservation {
 
 
     public static class Builder {
+        private LocalDate createDate;
         private LocalDate dateFrom;
         private LocalDate dateTo;
         private User user;
@@ -78,6 +82,11 @@ public class Reservation {
             return this;
         }
 
+        public Reservation.Builder createDate(LocalDate createDate) {
+            this.createDate = createDate;
+            return this;
+        }
+
         public Reservation.Builder user(User user) {
             this.user = user;
             return this;
@@ -90,6 +99,7 @@ public class Reservation {
 
         public Reservation build() {
             Reservation reservation = new Reservation();
+            reservation.setCreateDate(this.createDate);
             reservation.setDateFrom(this.dateFrom);
             reservation.setDateTo(this.dateTo);
             reservation.setUser(this.user);

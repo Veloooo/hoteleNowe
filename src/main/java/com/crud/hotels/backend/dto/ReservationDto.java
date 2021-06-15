@@ -15,6 +15,8 @@ import java.time.LocalDate;
 public class ReservationDto {
     private Long id;
 
+    private LocalDate createDate;
+
     private LocalDate dateFrom;
 
     private LocalDate dateTo;

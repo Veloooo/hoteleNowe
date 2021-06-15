@@ -52,6 +52,7 @@ public class ReservationService {
                 .daysTotal(reservationDto.getDateTo().getDayOfYear() - reservationDto.getDateFrom().getDayOfYear())
                 .priceTotal(getPrice(reservationDto.getDateFrom(), reservationDto.getDateTo(), reservationDto.getRoom().getId()))
                 .room(modelMapper.map(reservationDto.getRoom(), Room.class))
+                .createDate(LocalDate.now())
                 .build();
         User user = userRepository.findUserByLogin(reservationDto.getUser().getLogin());
         user.addReservation(reservation);
@@ -80,9 +81,8 @@ public class ReservationService {
 
     // TODO -> tu trzeba wykorzystać tę strategię rezerwacji
     private Integer getPrice(LocalDate dateFrom, LocalDate dateTo, Long roomId) {
-
-
         // Sprawdź ile czasu jest do rozpoczęcia wynajmu (early booking, normal, lastMinute)
+
 
         // Sprawdź obłożenie pokoi w danym terminie w danym hotelu (empty hotel, normal hotel, busy hotel)
 
