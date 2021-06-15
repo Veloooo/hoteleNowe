@@ -32,14 +32,6 @@ public class Hotel {
     @NonNull
     private String currency;
 
-    @Column
-    @NonNull
-    private Integer totalRooms;
-
-    @Column
-    @NonNull
-    private Integer freeRooms;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;

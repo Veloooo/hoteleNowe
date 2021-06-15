@@ -23,8 +23,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/{username}")
-    public UserDto getUser() {
-        return null;
+    public UserDto getUser(@PathVariable String username) {
+        return userService.getUserByLogin(username);
     }
 
     @GetMapping(path = "/report/{username}")

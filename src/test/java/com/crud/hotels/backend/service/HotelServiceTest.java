@@ -68,16 +68,12 @@ class HotelServiceTest {
                 .hotelName("free")
                 .hotelCountry("country1")
                 .hotelCity("city1")
-                .hotelTotalRooms(10)
-                .hotelFreeRooms(2)
                 .build();
 
         Hotel hotel2 = new Hotel.Builder()
                 .hotelName("free")
                 .hotelCountry("country2")
                 .hotelCity("city2")
-                .hotelTotalRooms(10)
-                .hotelFreeRooms(1)
                 .build();
 
         given(hotelRepository.getAllHotelsWithFreeRooms()).willReturn(Arrays.asList(hotel1, hotel2));
@@ -93,16 +89,12 @@ class HotelServiceTest {
                 .hotelName("free")
                 .hotelCountry("country1")
                 .hotelCity("city1")
-                .hotelTotalRooms(10)
-                .hotelFreeRooms(2)
                 .build();
 
         Hotel hotel2 = new Hotel.Builder()
                 .hotelName("free2")
                 .hotelCountry("country2")
                 .hotelCity("city2")
-                .hotelTotalRooms(10)
-                .hotelFreeRooms(1)
                 .build();
 
         given(userRepository.findUserByLogin(any())).willReturn(new User());

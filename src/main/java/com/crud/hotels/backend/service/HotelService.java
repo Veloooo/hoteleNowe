@@ -99,7 +99,6 @@ public class HotelService {
         return hotelRepository.save(hotel);
     }
 
-
     public void deleteHotel(Long hotelId) {
         try {
             hotelRepository.deleteById(hotelId);
