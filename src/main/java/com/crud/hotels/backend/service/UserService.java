@@ -5,6 +5,8 @@ import com.crud.hotels.backend.domain.UserReport;
 import com.crud.hotels.backend.dto.HotelDto;
 import com.crud.hotels.backend.dto.ReservationDto;
 import com.crud.hotels.backend.dto.UserDto;
+import com.crud.hotels.backend.dto.UserReportDto;
+import com.crud.hotels.backend.repository.UserReportRepository;
 import com.crud.hotels.backend.repository.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,12 +27,14 @@ import java.util.stream.Stream;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserReportRepository userReportRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, UserReportRepository userReportRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.userReportRepository = userReportRepository;
     }
 
 
@@ -69,7 +73,11 @@ public class UserService {
                     return userRepository.save(owner);
                 }).collect(Collectors.toList());
         ;
+    }
 
+    @Transactional(readOnly = true)
+    public List<UserReportDto> getAllReportsForUser(String username) {
+        return userReportRepository.findAllByOwner(userRepository.findUserByLogin(username)).stream().map(report -> modelMapper.map(report, UserReportDto.class)).collect(Collectors.toList());
     }
 
 

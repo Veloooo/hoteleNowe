@@ -28,14 +28,6 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<RoomDto> getAllRoomsForHotel(@RequestParam Long hotelId) {
-        return roomService.getAllRoomsForHotel(hotelId)
-                .stream()
-                .map(room -> modelMapper.map(room, RoomDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping
     public List<RoomDto> getAllRooms() {
         return roomService.findAll();
     }
@@ -60,16 +52,4 @@ public class RoomController {
     public RoomDto editRoom(@Valid @RequestBody RoomDto roomDto, @PathVariable Long id) {
         return modelMapper.map(roomService.editRoom(id, roomDto), RoomDto.class);
     }
-
-    @GetMapping
-    public List<RoomDto> getAllFreeRoomsBetweenDate(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo) {
-        return roomService.findAllWithCriteria(dateFrom, dateTo);
-    }
-
-    @GetMapping
-    public List<RoomDto> getAllFreeRoomsForSpecifiedNumberOfPeople(@RequestParam Double guests) {
-        return roomService.findAllWithCriteria(guests);
-    }
-
-
 }

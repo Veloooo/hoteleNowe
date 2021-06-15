@@ -18,7 +18,7 @@ public class ReportScheduler {
         this.userService = userService;
     }
 
-    @Scheduled(cron = "0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void generateReports() {
         userService.generateReportsForOwner();
     }

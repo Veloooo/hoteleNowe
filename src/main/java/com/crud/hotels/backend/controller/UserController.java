@@ -2,6 +2,7 @@ package com.crud.hotels.backend.controller;
 
 import com.crud.hotels.backend.domain.UserReport;
 import com.crud.hotels.backend.dto.UserDto;
+import com.crud.hotels.backend.dto.UserReportDto;
 import com.crud.hotels.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,21 +29,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/report/{username}")
-    public UserReport getAllReportsForUser(@PathVariable String username) {
-        //return userService.method()
-        return null;
+    public List<UserReportDto> getAllReportsForUser(@PathVariable String username) {
+        return userService.getAllReportsForUser(username);
     }
 
-    @GetMapping(path = "/report/{username}")
-    public List<UserReport> getAllReportsForDate(@PathVariable String username, @RequestParam LocalDate reportDate) {
-        //return userService.method()
-        return null;
-    }
-
-    @GetMapping(path = "/report/{username}")
-    public List<UserReport> getAllReportsForDate(@PathVariable String username, @RequestParam LocalDate reportDateFrom,
-                                                 @RequestParam LocalDate reportDateTo) {
-        //return userService.method()
-        return null;
-    }
 }

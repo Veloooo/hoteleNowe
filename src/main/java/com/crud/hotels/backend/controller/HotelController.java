@@ -59,10 +59,6 @@ public class HotelController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/owned/{user}")
-    public List<HotelDto> getHotelsOwnedByUser(@PathVariable String user) {
-        return hotelService.getHotelsOwnedByUser(user);
-    }
 
     @GetMapping(path = "/owned/{user}")
     public List<HotelDto> getHotelsOwnedByUser(@PathVariable String user, @RequestParam String name, @RequestParam String city,
