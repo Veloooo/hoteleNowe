@@ -50,7 +50,6 @@ public class ReservationController {
         return modelMapper.map(reservationService.editReservation(reservationId, reservationDto), ReservationDto.class);
     }
 
-
     @DeleteMapping(path = "/{reservationId}")
     public void deleteReservation(@PathVariable Long reservationId) {
         reservationService.deleteReservation(reservationId);
