@@ -8,6 +8,7 @@ import com.crud.hotels.backend.dto.UserDto;
 import com.crud.hotels.backend.exception.EntityNotFoundException;
 import com.crud.hotels.backend.repository.ReservationRepository;
 import com.crud.hotels.backend.repository.UserRepository;
+import com.crud.hotels.backend.strategy.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 public class ReservationService {
@@ -50,7 +53,7 @@ public class ReservationService {
                 .dateTo(reservationDto.getDateTo())
                 .paid(false)
                 .daysTotal(reservationDto.getDateTo().getDayOfYear() - reservationDto.getDateFrom().getDayOfYear())
-                .priceTotal(getPrice(reservationDto.getDateFrom(), reservationDto.getDateTo(), reservationDto.getRoom().getId()))
+                .priceTotal(getPrice(reservationDto.getDateFrom(), reservationDto.getDateTo(), reservationDto.getRoom().getPricePerNight()))
                 .room(modelMapper.map(reservationDto.getRoom(), Room.class))
                 .createDate(LocalDate.now())
                 .build();
@@ -73,22 +76,25 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public List<ReservationDto> getAllUserReservationsByUsername(String username) {
         UserDto userDto = modelMapper.map(userRepository.findUserByLogin(username), UserDto.class);
         return getAllUserReservations(userDto);
     }
 
 
-    // TODO -> tu trzeba wykorzystać tę strategię rezerwacji
-    private Integer getPrice(LocalDate dateFrom, LocalDate dateTo, Long roomId) {
-        // Sprawdź ile czasu jest do rozpoczęcia wynajmu (early booking, normal, lastMinute)
+    private Integer getPrice(LocalDate dateFrom, LocalDate dateTo, Double pricePerNight) {
+        BookingStrategy strategy;
 
+        if (DAYS.between(dateFrom, dateTo) > 30) {
+            strategy = new LongTimeBooking();
+        } else if (DAYS.between(dateFrom, LocalDate.now()) > 90) {
+            strategy = new EarlyBooking();
+        } else if (DAYS.between(dateFrom, LocalDate.now()) > 7) {
+            strategy = new LateBooking();
+        } else strategy = new RegularBooking();
 
-        // Sprawdź obłożenie pokoi w danym terminie w danym hotelu (empty hotel, normal hotel, busy hotel)
-
-        // Zwróć cenę rezerwacji
-
-        return 1;
+        return (int) (DAYS.between(dateFrom, dateTo) * pricePerNight * strategy.calculateDiscount());
     }
 
     @Transactional

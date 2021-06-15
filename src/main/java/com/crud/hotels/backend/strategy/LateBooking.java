@@ -4,7 +4,7 @@ import com.crud.hotels.backend.domain.Hotel;
 
 public class LateBooking implements BookingStrategy {
     @Override
-    public Hotel bookHotel() {
-        return null;
+    public double calculateDiscount() {
+        return 0.8;
     }
 }
